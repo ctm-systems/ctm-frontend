@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="login-page">
+  <v-container class="fill-height login-wrapper" >
     <v-row class="fill-height">
       
       <!-- COLUNA ESQUERDA - IMAGEM DO TRABALHADOR -->
@@ -95,20 +95,33 @@ function login() {
   overflow: hidden;
 }
 
+.login-wrapper {
+  min-height: 100vh !important; /* Estica o container até a tela toda */
+  padding: 0 !important;
+}
+
 /* --- LEFT SIDE --- */
 .left-area {
   position: relative;
-  background: transparent;
+  height: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  overflow: hidden;
+  padding: 0 !important;
 }
 
 .engenheiro-img {
-  width: 75%;
-  max-width: 500px;
   position: absolute;
   bottom: 0;
+  left: 0;
+  height: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+  object-position: bottom left;
+  margin: 0;
+  padding: 0;
 }
 
 /* logo superior esquerda */
@@ -116,7 +129,7 @@ function login() {
   position: absolute;
   top: 20px;
   left: 20px;
-  width: 110px;
+  width: 50px;
 }
 
 /* --- RIGHT SIDE --- */
