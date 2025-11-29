@@ -6,8 +6,8 @@
       <v-col cols="12" md="6" class="left-area">
         <!-- Imagem do trabalhador -->
         <img
-          class="worker-img"
-          src="@/assets/worker.png"
+          class="engenheiro-img"
+          src="@/assets/engenheiro.png"
           alt="Trabalhador"
         />
 
@@ -104,7 +104,7 @@ function login() {
   justify-content: center;
 }
 
-.worker-img {
+.engenheiro-img {
   width: 75%;
   max-width: 500px;
   position: absolute;
@@ -183,7 +183,7 @@ function login() {
 
 /* Responsividade */
 @media (max-width: 960px) {
-  .worker-img {
+  .engenheiro-img {
     display: none;
   }
   .logo-img {
