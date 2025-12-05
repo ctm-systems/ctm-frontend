@@ -1,25 +1,29 @@
 <template>
   <v-navigation-drawer
-    :width="expanded ? 260 : 80"
+    :width="expanded ? 260 : 75"
     app
     permanent
     @mouseenter="expanded = true"
     @mouseleave="expanded = false"
-    class="py-4"
+    class="py-4 d-flex"
   >
-    <div class="drawer-content">
-      <!-- TOPO (avatar + nome) -->
-      <div class="d-flex flex-row align-center" v-if="expanded">
-        <v-avatar size="40" class="ml-4">
-          <img src="/assets/avatar-teste.jpeg" alt="user" />
-        </v-avatar>
-        <div class="nome-usuario ml-6 mr-6">Nome do usuário</div>
-      </div>
+    <div class="drawer-content" >
 
-      <div v-else class="d-flex justify-center">
-        <v-avatar size="40">
-          <img src="/assets/avatar-teste.jpeg" alt="user" />
-        </v-avatar>
+      <!-- TOPO (avatar + nome) -->
+      <div class="user m">
+        <!-- Perfil do usuário com sidebar expandida -->
+        <div class="d-flex flex-row align-center" v-if="expanded">
+          <v-avatar size="40" class="ml-4">
+            <img src="/assets/avatar-teste.jpeg" alt="user" />
+          </v-avatar>
+          <div size="40" class="nome-usuario ml-6 mr-6">Nome do usuário</div>
+        </div>
+        <!-- Perfil do usuário com sidebar reduzida -->
+        <div v-else class="d-flex justify-center">
+          <v-avatar size="40">
+            <img src="/assets/avatar-teste.jpeg" alt="user" />
+          </v-avatar>
+        </div>
       </div>
       <!-- MENU PRINCIPAL -->
       <v-list nav density="comfortable">
@@ -32,18 +36,19 @@
           :class="[
             'menu-item',
             item.active ? 'menu-active' : ''
-          ]"
+          ]" 
+          class="rounded-lg ml-2 mr-"
         ></v-list-item>
       </v-list>
 
       <!-- SAIR -->
-      <div class="mt-auto">
+      <div class="mt-auto ml-2 mr-2">
         <v-list>
           <v-list-item
             prepend-icon="mdi-logout"
             :title="expanded ? 'Sair' : ''"
             @click="logout"
-            class="logout-item"
+            class="logout-item rounded-lg px-2"
           ></v-list-item>
         </v-list>
       </div>
@@ -60,7 +65,7 @@ const menu = ref([
   { title: "Dashboard", icon: "mdi-home", active: true },
   { title: "Lista de clientes", icon: "mdi-view-list", active: false },
   { title: "Cadastrar cliente", icon: "mdi-account-plus", active: false },
-  { title: "Cadastrar amostra", icon: "mdi-flask", active: false },
+  { title: "Cadastrar amostra", icon: "mdi-gold", active: false },
   { title: "Gerar orçamento", icon: "mdi-file-pdf-box", active: false },
   { title: "Tratar excel", icon: "mdi-table", active: false },
   { title: "Gerar laudo", icon: "mdi-file-document-edit", active: false },
@@ -84,8 +89,6 @@ function logout() {
 <style>
 /* Estilo base dos itens */
 .menu-item {
-  border-radius: 10px;
-  margin: 4px 8px;
   transition: background 0.25s;
 }
 
@@ -96,7 +99,6 @@ function logout() {
 
 /* Botão de sair */
 .logout-item {
-  border-radius: 10px;
   margin: 4px 8px;
   color: #e53935 !important;
   transition: background 0.25s;
@@ -129,5 +131,4 @@ function logout() {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 </style>
