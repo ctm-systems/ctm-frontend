@@ -1,10 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import SideBar from './components/SideBar.vue';
+</script>
 
 <template>
-  <h1>Projeto Base</h1>
-  <v-btn>
-    Testanto Vuetify
-  </v-btn>
+  <v-app>
+    <SideBar />
+
+    <v-main>
+      <router-view />
+    </v-main>
+
+  </v-app>
 </template>
 
 <style scoped></style>

@@ -7,45 +7,46 @@
     @mouseleave="expanded = false"
     class="py-4"
   >
-    <!-- TOPO (avatar + nome) -->
-    <div class="d-flex flex-column align-center mb-6" v-if="expanded">
-      <v-avatar size="56" class="mb-2">
-        <img src="" alt="user" />
-      </v-avatar>
-      <div class="text-subtitle-1 font-weight-medium">Nome do usuário</div>
-    </div>
+    <div class="drawer-content">
+      <!-- TOPO (avatar + nome) -->
+      <div class="d-flex flex-row align-center" v-if="expanded">
+        <v-avatar size="40" class="ml-4">
+          <img src="/assets/avatar-teste.jpeg" alt="user" />
+        </v-avatar>
+        <div class="nome-usuario ml-6 mr-6">Nome do usuário</div>
+      </div>
 
-    <div v-else class="d-flex justify-center mb-10">
-      <v-avatar size="40">
-        <img src="" alt="user" />
-      </v-avatar>
-    </div>
-
-    <!-- MENU PRINCIPAL -->
-    <v-list nav density="comfortable">
-      <v-list-item
-        v-for="item in menu"
-        :key="item.title"
-        :prepend-icon="item.icon"
-        :title="expanded ? item.title : ''"
-        @click="setActive(item)"
-        :class="[
-          'menu-item',
-          item.active ? 'menu-active' : ''
-        ]"
-      ></v-list-item>
-    </v-list>
-
-    <!-- SAIR -->
-    <div class="mt-auto">
-      <v-list>
+      <div v-else class="d-flex justify-center">
+        <v-avatar size="40">
+          <img src="/assets/avatar-teste.jpeg" alt="user" />
+        </v-avatar>
+      </div>
+      <!-- MENU PRINCIPAL -->
+      <v-list nav density="comfortable">
         <v-list-item
-          prepend-icon="mdi-logout"
-          :title="expanded ? 'Sair' : ''"
-          @click="logout"
-          class="logout-item"
+          v-for="item in menu"
+          :key="item.title"
+          :prepend-icon="item.icon"
+          :title="expanded ? item.title : ''"
+          @click="setActive(item)"
+          :class="[
+            'menu-item',
+            item.active ? 'menu-active' : ''
+          ]"
         ></v-list-item>
       </v-list>
+
+      <!-- SAIR -->
+      <div class="mt-auto">
+        <v-list>
+          <v-list-item
+            prepend-icon="mdi-logout"
+            :title="expanded ? 'Sair' : ''"
+            @click="logout"
+            class="logout-item"
+          ></v-list-item>
+        </v-list>
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
@@ -80,7 +81,7 @@ function logout() {
 }
 </script>
 
-<style scoped>
+<style>
 /* Estilo base dos itens */
 .menu-item {
   border-radius: 10px;
@@ -90,8 +91,7 @@ function logout() {
 
 /* Item ativo */
 .menu-active {
-  background: #e3e3e3 !important;
-  font-weight: 600;
+  color: #0E544A !important;
 }
 
 /* Botão de sair */
@@ -99,7 +99,6 @@ function logout() {
   border-radius: 10px;
   margin: 4px 8px;
   color: #e53935 !important;
-  font-weight: 600;
   transition: background 0.25s;
 }
 
@@ -112,4 +111,23 @@ function logout() {
 .v-navigation-drawer {
   transition: width 0.25s ease;
 }
+
+.v-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nome-usuario{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 </style>
