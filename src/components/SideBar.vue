@@ -7,14 +7,14 @@
     @mouseleave="expanded = false"
     class="py-4 d-flex"
   >
-    <div class="drawer-content" >
+    <div class="d-flex flex-column h-100">
 
       <!-- TOPO (avatar + nome) -->
-      <div class="avatar-container">
+      <div class="d-flex align-center ga-5 px-4">
         <v-avatar>
           <img src="@/../assets/avatar-teste.jpeg" alt="user" />
         </v-avatar>
-        <div v-if="expanded" class="nome-usuario">Nome do usuário</div>
+        <div v-if="expanded" class="text-body-2 text-truncate" style="max-width: 200px;">Nome do usuário</div>
       </div>
 
       <!-- MENU PRINCIPAL -->
@@ -25,8 +25,11 @@
           :prepend-icon="item.icon"
           :title="expanded ? item.title : ''"
           @click="setActive(item)"
-          :class="['menu-item', item.active ? 'menu-active' : '']" 
-          class="rounded-lg ml-2 mr-"
+          :class="{
+            'text-primary': item.active,
+            'text-medium-emphasis': !item.active
+          }"
+          class="rounded-lg mx-2 transition-all"
         ></v-list-item>
       </v-list>
 
@@ -37,7 +40,7 @@
             prepend-icon="mdi-logout"
             :title="expanded ? 'Sair' : ''"
             @click="logout"
-            class="logout-item rounded-lg px-2"
+            class="rounded-lg mx-2 text-error hover:bg-error-lighten-4 transition-all"
           ></v-list-item>
         </v-list>
       </div>
@@ -45,7 +48,7 @@
   </v-navigation-drawer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 
 const expanded = ref(false)
@@ -60,7 +63,7 @@ const menu = ref([
   { title: 'Gerar laudo', icon: 'mdi-file-document-edit', active: false },
 ])
 
-function setActive(item) {
+function setActive(item: { active: boolean }) {
   menu.value.forEach((i) => (i.active = false))
   item.active = true
 }
@@ -75,65 +78,21 @@ function logout() {
 }
 </script>
 
-<style>
-/* Estilo base dos itens */
-.menu-item {
-  transition: background 0.25s;
-}
-
-/* Item ativo */
-.menu-active {
-  color: #19917f !important;
-}
-
-/* Botão de sair */
-.logout-item {
-  margin: 4px 8px;
-  color: #e53935 !important;
-  transition: background 0.25s;
-}
-
-/* Hover do Sair */
-.logout-item:hover {
-  background: #ffe5e5 !important;
-}
-
-/* Transição do drawer */
+<style scoped>
+/* Transição suave do drawer */
 .v-navigation-drawer {
   transition: width 0.25s ease;
 }
 
+/* Garantir que a imagem do avatar cubra todo o espaço */
 .v-avatar img {
   width: 100%;
   height: 100%;
+  object-fit: cover;
 }
 
-.drawer-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.nome-usuario {
-  display: flex;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.avatar-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 21px;
-  padding: 0 16px;
-}
-
-.v-list-item-title,
-.nome-usuario {
-  font-size: 15px !important;
-  font-family: inherit !important;
-  font-weight: 400 !important;
+/* Classes de transição personalizadas */
+.transition-all {
+  transition: all 0.25s ease;
 }
 </style>
