@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SideBar from './components/SideBar.vue';
+import SideBar from '@/components/SideBar.vue'
 </script>
 
 <template>
@@ -9,7 +9,6 @@ import SideBar from './components/SideBar.vue';
     <v-main>
       <router-view />
     </v-main>
-
   </v-app>
 </template>
 

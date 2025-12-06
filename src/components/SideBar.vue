@@ -8,13 +8,14 @@
     class="py-4 d-flex"
   >
     <div class="d-flex flex-column h-100">
-
       <!-- TOPO (avatar + nome) -->
       <div class="d-flex align-center ga-5 px-4">
         <v-avatar>
           <img src="@/../assets/avatar-teste.jpeg" alt="user" />
         </v-avatar>
-        <div v-if="expanded" class="text-body-2 text-truncate" style="max-width: 200px;">Nome do usuário</div>
+        <div v-if="expanded" class="text-body-2 text-truncate" style="max-width: 200px">
+          Nome do usuário
+        </div>
       </div>
 
       <!-- MENU PRINCIPAL -->
@@ -27,7 +28,7 @@
           @click="setActive(item)"
           :class="{
             'text-primary': item.active,
-            'text-medium-emphasis': !item.active
+            'text-medium-emphasis': !item.active,
           }"
           class="rounded-lg mx-2 transition-all"
         ></v-list-item>
