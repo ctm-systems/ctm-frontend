@@ -1,83 +1,65 @@
 <template>
-  <v-container class="fill-height login-wrapper" >
-    <v-row class="fill-height">
-      
-      <!-- COLUNA ESQUERDA - IMAGEM DO TRABALHADOR -->
-      <v-col cols="12" md="6" class="left-area">
-        <!-- Imagem do trabalhador -->
-        <img
-          class="engenheiro-img"
-          src="@/assets/engenheiro.png"
-          alt="Trabalhador"
-        />
+  <v-row class="ma-0">
 
-        <!-- Logo superior esquerda -->
+    <v-col cols="12" md="6" class="left-area">
+      <!-- Área esquerda - Adicionar imagem -->
+    </v-col>
+
+    <!-- COLUNA DIREITA - FORMULÁRIO -->
+    <v-col cols="12" md="6" class="form-area px-8">
+
+      <div class="container-logo w-100">
         <img
-          class="logo-img"
+          class="logo-img my-4"
           src="@/assets/logo.png"
           alt="Logo"
         />
-      </v-col>
+      </div>
 
-      <!-- COLUNA DIREITA - FORMULÁRIO -->
-      <v-col cols="12" md="6" class="form-area">
+      <div class="welcome-text">
+        <h2>Olá, seja bem-vindo(a)!</h2>
+        <h1>
+          <span class="ct">CT</span>
+          <span class="mineral">Mineral</span>
+        </h1>
+      </div>
 
-        <div class="welcome-text">
-          <h2>Olá, seja bem-vindo(a)!</h2>
-          <h1>
-            <span class="ct">CT</span>
-            <span class="mineral">Mineral</span>
-          </h1>
-        </div>
+      <v-form @submit.prevent="login">
 
-        <v-form @submit.prevent="login">
+        <TextInputComponent
+          v-model="username"
+          :placeholder-props="'Informe seu usuário'"
+          :prepend-icon-props="'mdi-account'"
+        />
 
-          <!-- INPUT USUÁRIO -->
-          <v-text-field
-            v-model="username"
-            variant="outlined"
-            placeholder="Informe seu usuário"
-            prepend-inner-icon="mdi-account"
-            class="input-field"
-          />
+        <TextInputComponent
+          v-model="password"
+          :placeholder-props="'Informe sua senha'"
+          :type-props="showPassword ? 'text' : 'password'"
+          :prepend-icon-props="'mdi-lock'"
+          :append-icon-props="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+          @click:append-inner="showPassword = !showPassword"
+        />
 
-          <!-- INPUT SENHA -->
-          <v-text-field
-            v-model="password"
-            variant="outlined"
-            placeholder="Informe sua senha"
-            :type="showPassword ? 'text' : 'password'"
-            prepend-inner-icon="mdi-lock"
-            :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-            @click:append-inner="showPassword = !showPassword"
-            class="input-field"
-          />
+        <!-- BOTÃO ENTRAR -->
+        <v-btn
+          type="submit"
+          block
+          class="btn-login"
+          size="x-large"
+        >
+          Acessar
+        </v-btn>
+      </v-form>
 
-          <!-- BOTÃO ENTRAR -->
-          <v-btn
-            type="submit"
-            block
-            class="btn-login"
-            size="x-large"
-          >
-            Acessar
-          </v-btn>
-        </v-form>
+    </v-col>
 
-        <!-- ESQUECEU A SENHA -->
-        <div class="forgot">
-          Esqueceu a senha?
-          <a href="#">Clique aqui</a>
-        </div>
-
-      </v-col>
-
-    </v-row>
-  </v-container>
+  </v-row>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import TextInputComponent from "@/components/TextInputComponent.vue";
 
 const username = ref("");
 const password = ref("");
@@ -89,52 +71,16 @@ function login() {
 </script>
 
 <style scoped>
-.login-page {
-  background: #f3f3f3;
-  min-height: 100vh;
-  overflow: hidden;
-}
 
-.login-wrapper {
-  min-height: 100vh !important; /* Estica o container até a tela toda */
-  padding: 0 !important;
-}
-
-/* --- LEFT SIDE --- */
 .left-area {
-  position: relative;
-  height: 100%;
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-  padding: 0 !important;
+  background-color: grey;
 }
 
-.engenheiro-img {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 100%;
-  max-height: 100vh;
-  object-fit: contain;
-  object-position: bottom left;
-  margin: 0;
-  padding: 0;
-}
-
-/* logo superior esquerda */
 .logo-img {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   width: 50px;
 }
 
-/* --- RIGHT SIDE --- */
 .form-area {
-  padding: 60px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,7 +88,6 @@ function login() {
 
 .welcome-text h2 {
   font-size: 24px;
-  margin-bottom: 10px;
   color: #333;
 }
 
@@ -152,56 +97,33 @@ function login() {
 }
 
 .ct {
-  color: #ff8a00; /* Laranja */
+  color: #ff8a00;
 }
 
 .mineral {
-  color: #006d55; /* Verde escuro */
+  color: #006d55;
 }
 
-/* Inputs */
-.input-field {
-  margin-top: 20px;
-  border-radius: 15px;
-}
-
-/* Botão Acessar */
 .btn-login {
-  margin-top: 35px;
-  padding: 15px;
-  font-size: 22px;
-  font-weight: bold;
+  margin-top: 25px;
+  font-size: 20px;
+  font-weight: 700;
   color: white;
   border-radius: 40px;
   background: linear-gradient(90deg, #007965, #004d3d);
 }
 
-/* Esqueceu a senha */
-.forgot {
-  margin-top: 25px;
-  text-align: center;
-  font-size: 16px;
-  color: #555;
-}
-
-.forgot a {
-  color: #ff8a00;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.forgot a:hover {
-  text-decoration: underline;
-}
-
-/* Responsividade */
 @media (max-width: 960px) {
-  .engenheiro-img {
+  .left-area {
     display: none;
   }
-  .logo-img {
-    display: none;
+
+  .container-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
   .form-area {
     padding: 30px;
     text-align: center;

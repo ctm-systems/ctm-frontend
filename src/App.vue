@@ -1,10 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LoginView from './views/LoginView.vue';
+</script>
 
 <template>
-  <h1>Projeto Base</h1>
-  <v-btn>
-    Testanto Vuetify
-  </v-btn>
+  <v-app>
+    <LoginView />
+  </v-app>
 </template>
 
 <style scoped></style>
