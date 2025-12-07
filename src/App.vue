@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import LoginView from './views/LoginView.vue';
-// import SideBar from './components/SideBar.vue';
+// import SideBarComponent from './components/SideBarComponent.vue';
 </script>
 
 <template>
-  <v-app>
-    <LoginView />
-    <!-- <SideBar /> -->
-  </v-app>
+  <v-responsive>
+    <v-app>
+      <!-- <SideBarComponent /> -->
+      <LoginView />
+    </v-app>
+  </v-responsive>
 </template>
 
 <style scoped></style>

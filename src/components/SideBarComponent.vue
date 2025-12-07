@@ -1,0 +1,70 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const menu = ref([
+  { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard' },
+  { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes' },
+  { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente' },
+  { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra' },
+  { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento' },
+  { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel' },
+  { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo' },
+])
+
+/* Função do botão sair */
+function logout() {
+  console.log('Saindo...')
+  // Aqui você pode:
+  // - limpar token
+  // - redirecionar
+  // - chamar API de logout
+}
+</script>
+
+<template>
+  <v-navigation-drawer
+    expand-on-hover
+    permanent
+    rail
+  >
+    <v-list>
+      <v-list-item
+        prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
+        title="Nome do usuário"
+        subtitle="Matrícula"
+      />
+    </v-list>
+
+    <v-divider />
+
+    <v-list
+      density="compact"
+      nav
+    >
+      <v-list-item
+        v-for="item in menu"
+        :key="item.title"
+        :prepend-icon="item.icon"
+        :title="item.title"
+        :value="item.value"
+        class="rounded-lg"
+      />
+    </v-list>
+
+    <template v-slot:append>
+      <v-list
+        density="compact"
+        nav
+      >
+        <v-list-item
+          prepend-icon="mdi-logout"
+          title="Sair"
+          @click="logout"
+          class="rounded-lg text-error hover:bg-error-lighten-4"
+        />
+      </v-list>
+    </template>
+  </v-navigation-drawer>
+</template>
+
+<style scoped></style>
