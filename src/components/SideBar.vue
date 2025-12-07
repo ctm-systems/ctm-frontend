@@ -41,7 +41,7 @@
             prepend-icon="mdi-logout"
             :title="expanded ? 'Sair' : ''"
             @click="logout"
-            class="rounded-lg mx-2 text-error hover:bg-error-lighten-4 transition-all"
+            class="rounded-lg text-error hover:bg-error-lighten-4 transition-all"
           ></v-list-item>
         </v-list>
       </div>
