@@ -62,11 +62,18 @@ const filteredClients = computed(() => {
           class="pa-3"
         >
           <v-card-text class="pa-1">
-            <div class="d-flex flex-column ga-2">
-              <span class="text-h5 font-weight-bold">{{ client.nome }}</span>
-              <span class="text-subtitle-1 ma-0">{{ client.email }}</span>
-              <span class="text-subtitle-1 ma-0">{{ client.telefone }}</span>
-            </div>
+            <v-row>
+              <v-col>
+                <div class="d-flex flex-column ga-2">
+                  <span class="text-h5 font-weight-bold">{{ client.nome }}</span>
+                  <span class="text-subtitle-1 ma-0">{{ client.email }}</span>
+                  <span class="text-subtitle-1 ma-0">{{ client.telefone }}</span>
+                </div>
+              </v-col>
+              <v-col class="d-flex justify-end">
+                <v-btn icon="mdi-arrow-right" elevation="0"/>
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>

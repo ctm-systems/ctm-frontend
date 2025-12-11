@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import LoginView from './views/LoginView.vue';
 import SideBarComponent from './components/SideBarComponent.vue';
-import ListClientsView from './views/ListClientsView.vue';
+import ListClientsView from './views/ClientesView/ListClientsView.vue';
 </script>
 
 <template>
