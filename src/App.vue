@@ -2,7 +2,8 @@
 // import LoginView from './views/LoginView.vue';
 import SideBarComponent from './components/SideBarComponent.vue';
 // import ListClientsView from './views/ClientesView/ListClientsView.vue';
-import InformationClientsView from './views/ClientesView/InformationClientsView.vue';
+// import InformationClientsView from './views/ClientesView/InformationClientsView.vue';
+import InformationAmostrasView from './views/ClientesView/InformationAmostrasView.vue';
 </script>
 
 <template>
@@ -12,7 +13,7 @@ import InformationClientsView from './views/ClientesView/InformationClientsView.
       <!-- <LoginView /> -->
       <v-main>
         <!-- <ListClientsView /> -->
-        <InformationClientsView />
+        <InformationAmostrasView />
       </v-main>
     </v-app>
   </v-responsive>
