@@ -32,8 +32,8 @@
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
-            <v-btn color="#FF1A1A">Limpar campos</v-btn>
-            <v-btn color="#00A400">Gerar laudo</v-btn>
+            <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
+            <v-btn color="#00A400" type="submit">Gerar laudo</v-btn>
           </div>
         </v-form>
       </v-col>

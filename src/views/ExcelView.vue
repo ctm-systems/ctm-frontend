@@ -31,8 +31,8 @@
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end mt-4">
-            <v-btn color="#FF1A1A">Limpar campos</v-btn>
-            <v-btn color="#00A400">Gerar arquivo</v-btn>
+            <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
+            <v-btn color="#00A400" type="submit">Gerar arquivo</v-btn>
           </div>
         </v-form>
       </v-col>

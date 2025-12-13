@@ -9,7 +9,7 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
         <span class="text-h6 font-weight-bold">Cadastrar amostra</span>
       </v-col>
       <v-col cols="12">
-        <v-form>
+        <v-form @submit.prevent>
           <v-file-input
             label="Foto da amostra"
             prepend-icon="mdi-camera"
@@ -45,8 +45,8 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
-            <v-btn color="#FF1A1A">Limpar campos</v-btn>
-            <v-btn color="#00A400">Adicionar</v-btn>
+            <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
+            <v-btn color="#00A400" type="submit">Adicionar</v-btn>
           </div>
         </v-form>
       </v-col>
