@@ -2,27 +2,40 @@
 </script>
 
 <template>
-  <v-container class="py-10" style="max-width: 1166px">
-    <!-- Cliente -->
-    <v-row class="mb-2">
+  <v-container fluid>
+    <v-row>
       <v-col cols="12">
-        <span class="text-h5 font-weight-bold">Cliente</span>
-          <v-select variant="outlined" class="mt-5 rounded-lg" label="Selecione o cliente" />
+        <span class="text-h6 font-weight-bold">Tratamento de excel</span>
       </v-col>
-    </v-row>
+      <v-col cols="12">
+        <v-form @submit.prevent>
+          <v-select
+            label="Cliente"
+            variant="outlined"
+            density="compact"
+            :items="['Cliente 1', 'Cliente 2', 'Cliente 3']"
+          />
 
-    <!-- Amostra -->
-    <v-row class="mb-2">
-      <v-col cols="12">
-        <span class="text-h5 font-weight-bold">Amostra</span>
-          <v-select variant="outlined" class="mt-5 rounded-lg" label="Selecione a amostra" />
+          <v-select
+            label="Amostra"
+            variant="outlined"
+            density="compact"
+            :items="['Amostra 1', 'Amostra 2', 'Amostra 3']"
+          />
+
+          <v-file-upload
+            color="#EDEDED"
+            icon="mdi-file-edit"
+            density="compact"
+            title="Arraste ou clique para adicionar arquivo"
+          />
+
+          <div class="d-flex flex-column flex-md-row ga-3 justify-md-end mt-4">
+            <v-btn color="#FF1A1A">Limpar campos</v-btn>
+            <v-btn color="#00A400">Gerar arquivo</v-btn>
+          </div>
+        </v-form>
       </v-col>
     </v-row>
-    <v-file-upload
-      color="#EDEDED"
-      icon="mdi-file-edit"
-      density="compact"
-      title="Arraste ou clique para adicionar arquivo"
-    ></v-file-upload>
   </v-container>
 </template>
