@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { api } from '@/services/api'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,7 @@ const router = createRouter({
     {
       path: '/app',
       component: () => import('../layouts/MainLayout.vue'),
+      meta: { requiresAuth: true },
       children: [
         // Adicionar a rota para a dashboard
 
@@ -55,6 +57,19 @@ const router = createRouter({
       ]
     },
   ],
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (!to.meta.requiresAuth) {
+    return next()
+  }
+
+  try {
+    await api.get('/data')
+    return next()
+  } catch (error) {
+    return next('/login')
+  }
 })
 
 export default router

@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router';
+import { api } from '@/services/api';
+
+const router = useRouter()
 
 const menu = ref([
   { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard', route: '/app' },
@@ -11,13 +15,13 @@ const menu = ref([
   { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo', route: '/app/laudos/gerar' },
 ])
 
-/* Função do botão sair */
-function logout() {
-  console.log('Saindo...')
-  // Aqui você pode:
-  // - limpar token
-  // - redirecionar
-  // - chamar API de logout
+async function logout() {
+  try {
+    await api.get('/logout')
+    router.push('/')
+  } catch (error) {
+    console.error('Erro ao fazer logout:', error)
+  }
 }
 </script>
 
