@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import TextInputComponent from '@/components/TextInputComponent.vue'
 </script>
 
 <template>
@@ -8,9 +7,7 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
     <v-row class="mb-2">
       <v-col cols="12">
         <span class="text-h5 font-weight-bold">Cliente</span>
-        <v-sheet class="rounded-lg">
-          <TextInputComponent placeholderProps="Selecione o cliente" />
-        </v-sheet>
+          <v-select variant="outlined" class="mt-5 rounded-lg" label="Selecione o cliente" />
       </v-col>
     </v-row>
 
@@ -18,13 +15,14 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
     <v-row class="mb-2">
       <v-col cols="12">
         <span class="text-h5 font-weight-bold">Amostra</span>
-        <v-sheet class="rounded-lg">
-          <TextInputComponent placeholderProps="Selecione a amostra" />
-        </v-sheet>
+          <v-select variant="outlined" class="mt-5 rounded-lg" label="Selecione a amostra" />
       </v-col>
     </v-row>
-      <v-file-upload color="#EDEDED" icon="mdi-file-edit" density="compact" title="Arraste ou clique para adicionar arquivo"></v-file-upload>
+    <v-file-upload
+      color="#EDEDED"
+      icon="mdi-file-edit"
+      density="compact"
+      title="Arraste ou clique para adicionar arquivo"
+    ></v-file-upload>
   </v-container>
 </template>
-
-<style scoped></style>
