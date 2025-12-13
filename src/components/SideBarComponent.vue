@@ -2,13 +2,13 @@
 import { ref } from 'vue'
 
 const menu = ref([
-  { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard' },
-  { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes' },
-  { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente' },
-  { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra' },
-  { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento' },
-  { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel' },
-  { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo' },
+  { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard', route: '/app' },
+  { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes', route: '/app/clientes' },
+  { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente', route: '/app/clientes/cadastrar' },
+  { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra', route: '/app/amostras/cadastrar' },
+  { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento', route: '/app/orcamentos/gerar' },
+  { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel', route: '/app/excel/tratar' },
+  { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo', route: '/app/laudos/gerar' },
 ])
 
 /* Função do botão sair */
@@ -47,6 +47,8 @@ function logout() {
         :prepend-icon="item.icon"
         :title="item.title"
         :value="item.value"
+        :to="item.route"
+        router
         class="rounded-lg"
       />
     </v-list>
