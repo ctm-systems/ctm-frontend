@@ -1,22 +1,24 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { onMounted, ref, computed } from 'vue'
+import { useClientsStore } from '@/stores/clients'
 
-// Mock data para demonstração
-const clients = ref([
-  { id: 1, nome: 'João Silva', email: 'joao@email.com', telefone: '(11) 99999-9999' },
-  { id: 2, nome: 'Maria Oliveira', email: 'maria@email.com', telefone: '(21) 98888-8888' },
-])
+const clientsStore = useClientsStore()
 
-const searchQuery = ref('')
+const search = ref('')
 
-// Função para filtrar clientes baseado na busca
+onMounted(() => {
+  if (!clientsStore.clients.length) {
+    clientsStore.fetchClients()
+  }
+})
+
 const filteredClients = computed(() => {
-  if (!searchQuery.value) return clients.value
+  if (!search.value) {
+    return clientsStore.clients
+  }
 
-  return clients.value.filter(client =>
-    client.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    client.telefone.includes(searchQuery.value)
+  return clientsStore.clients.filter(client =>
+    client.nome.toLowerCase().includes(search.value.toLowerCase())
   )
 })
 </script>
@@ -28,7 +30,7 @@ const filteredClients = computed(() => {
       <v-col cols="auto">
         <!-- Campo de busca -->
         <v-text-field
-          v-model="searchQuery"
+          v-model="search"
           prepend-inner-icon="mdi-magnify"
           placeholder="Buscar cliente"
           variant="underlined"
