@@ -15,7 +15,7 @@ defineProps({
     :prepend-inner-icon="prependIconProps"
     :append-inner-icon="appendIconProps"
     variant="outlined"
-    class="mt-5 rounded-lg"
+    class="rounded-lg"
   />
 </template>
 
