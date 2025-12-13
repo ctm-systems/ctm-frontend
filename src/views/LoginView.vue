@@ -24,11 +24,11 @@
         </h1>
       </div>
 
-      <v-form @submit.prevent="login">
+      <v-form @submit.prevent="handleLogin">
 
         <TextInputComponent
           v-model="username"
-          :placeholder-props="'Informe seu usuário'"
+          :placeholder-props="'Informe sua matrícula'"
           :prepend-icon-props="'mdi-account'"
         />
 
@@ -47,11 +47,12 @@
           block
           class="btn-login"
           size="x-large"
+          :loading="authStore.loading"
         >
           Acessar
         </v-btn>
 
-        <v-alert v-if="error" type="error" class="mt-4">{{ error }}</v-alert>
+        <v-alert v-if="authStore.error" type="error" class="mt-4">{{ authStore.error }}</v-alert>
       </v-form>
 
     </v-col>
@@ -60,32 +61,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { api } from "@/services/api";
-import TextInputComponent from "@/components/TextInputComponent.vue";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import TextInputComponent from '@/components/TextInputComponent.vue'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
-const username = ref("")
-const password = ref("")
+const username = ref('')
+const password = ref('')
 const showPassword = ref(false)
-const error = ref('')
 
-async function login() {
-  error.value = ''
-
+async function handleLogin() {
   try {
-    await api.post('/login', {
-      username: username.value,
-      password: password.value
-    })
-
+    await authStore.login(username.value, password.value)
     router.push('/app')
-  } catch (err) {
-    error.value = 'Erro ao efetuar login. Verifique suas credenciais.'
-    console.error(err)
-  }
+  } catch {}
 }
 </script>
 
