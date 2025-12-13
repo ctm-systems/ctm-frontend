@@ -5,7 +5,7 @@
         <span class="text-h6 font-weight-bold">Adicionar cliente</span>
       </v-col>
       <v-col cols="12">
-        <v-form @submit.prevent>
+        <v-form @submit.prevent="saveClient">
           <v-row dense>
             <v-col cols="12" md="6">
               <TextInputComponent
@@ -63,9 +63,8 @@
               />
             </v-col>
 
-            <v-col cols="12" md="8">
+            <v-col cols="12">
               <v-select
-                v-model="form.tecnicos"
                 :items="tecnicosLista"
                 label="Técnico(s) responsável(is)"
                 multiple
@@ -75,22 +74,11 @@
                 density="compact"
               />
             </v-col>
-
-            <v-col cols="12" md="4">
-              <v-text-field
-                v-model="form.data"
-                type="date"
-                label="Data de recebimento"
-                variant="outlined"
-                class="rounded-lg"
-                density="compact"
-              />
-            </v-col>
           </v-row>
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
-            <v-btn color="#FF1A1A">Limpar campos</v-btn>
-            <v-btn color="#00A400">Adicionar</v-btn>
+            <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
+            <v-btn color="#00A400" type="submit">Adicionar</v-btn>
           </div>
         </v-form>
       </v-col>
@@ -100,21 +88,31 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useClientsStore } from '@/stores/clients'
+import { createClients } from '@/services/client.service'
 import TextInputComponent from '@/components/TextInputComponent.vue'
 
-// Dados do formulário
+const clientsStore = useClientsStore()
+
 const form = ref({
   nome: '',
   email: '',
-  cpf: '',
   telefone: '',
+  cpf: '',
   cep: '',
   endereco: '',
-  tecnicos: [],
-  data: '',
 })
 
-// Lista de técnicos (exemplo)
+async function saveClient() {
+  try {
+    const client = await createClients(form.value)
+
+    clientsStore.addClient(client)
+  } catch (error) {
+    console.error('Erro ao salvar o cliente:', error)
+  }
+}
+
 const tecnicosLista = ['Roberio', 'Ian', 'Jardson', 'Lucas']
 
 </script>
