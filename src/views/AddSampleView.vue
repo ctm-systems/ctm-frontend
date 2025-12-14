@@ -2,14 +2,17 @@
 import TextInputComponent from '@/components/TextInputComponent.vue'
 import { useClientsStore } from '@/stores/clients'
 import { useTipoAmostraStore } from '@/stores/tipoAmostra';
+import { useProcessStore } from '@/stores/process';
 import { onMounted } from 'vue';
 
 const clientsStore = useClientsStore()
 const tipoAmostraStore = useTipoAmostraStore()
+const processStore = useProcessStore()
 
 onMounted(() => {
   clientsStore.fetchClients()
   tipoAmostraStore.fetchTipoAmostras()
+  processStore.fetchProcesses()
 })
 </script>
 
@@ -50,7 +53,7 @@ onMounted(() => {
 
           <v-select
             label="Processos"
-            :items="['FRX', 'DRX', 'Moagem']"
+            :items="processStore.processes.map(process => process.nome)"
             variant="outlined"
             density="compact"
           />
