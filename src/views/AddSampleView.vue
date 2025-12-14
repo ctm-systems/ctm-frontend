@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import TextInputComponent from '@/components/TextInputComponent.vue'
+import { useClientsStore } from '@/stores/clients'
+import { useTipoAmostraStore } from '@/stores/tipoAmostra';
+import { onMounted } from 'vue';
+
+const clientsStore = useClientsStore()
+const tipoAmostraStore = useTipoAmostraStore()
+
+onMounted(() => {
+  clientsStore.fetchClients()
+  tipoAmostraStore.fetchTipoAmostras()
+})
 </script>
 
 <template>
@@ -19,7 +30,7 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
 
           <v-select
             label="Cliente"
-            :items="['Cliente 1', 'Cliente 2', 'Cliente 3']"
+            :items="clientsStore.clients.map(client => client.nome)"
             variant="outlined"
             density="compact"
           />
@@ -32,7 +43,7 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
 
           <v-select
             label="Tipo de amostra"
-            :items="['Rocha', 'Areia']"
+            :items="tipoAmostraStore.tipoAmostras.map(tipo => tipo.nome)"
             variant="outlined"
             density="compact"
           />
@@ -40,6 +51,13 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
           <v-select
             label="Processos"
             :items="['FRX', 'DRX', 'Moagem']"
+            variant="outlined"
+            density="compact"
+          />
+
+          <v-text-field
+            label="Data de recebimento"
+            type="date"
             variant="outlined"
             density="compact"
           />
