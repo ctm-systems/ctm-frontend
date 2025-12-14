@@ -40,7 +40,11 @@ const router = createRouter({
           component: () => import('../views/AddSampleView.vue')
         },
 
-        // Adicionar a rota para criar orçamento
+        {
+          path: '/app/orcamentos/gerar',
+          name: 'gerar-orcamento',
+          component: () => import('../views/BudgetView.vue')
+        },
 
         {
           path: '/app/excel/tratar',
