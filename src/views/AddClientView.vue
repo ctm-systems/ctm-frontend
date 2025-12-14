@@ -65,7 +65,7 @@
 
             <v-col cols="12">
               <v-select
-                :items="tecnicosLista"
+                :items="tecnicoStore.tecnicos.map(tecnico => tecnico.nome)"
                 label="Técnico(s) responsável(is)"
                 multiple
                 chips
@@ -87,12 +87,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useClientsStore } from '@/stores/clients'
 import { createClients } from '@/services/client.service'
+import { useTecnicoStore } from '@/stores/tecnico'
 import TextInputComponent from '@/components/TextInputComponent.vue'
 
 const clientsStore = useClientsStore()
+const tecnicoStore = useTecnicoStore()
 
 const form = ref({
   nome: '',
@@ -101,6 +103,10 @@ const form = ref({
   cpf: '',
   cep: '',
   endereco: '',
+})
+
+onMounted(() => {
+  tecnicoStore.fetchTecnicos()
 })
 
 async function saveClient() {
@@ -112,7 +118,4 @@ async function saveClient() {
     console.error('Erro ao salvar o cliente:', error)
   }
 }
-
-const tecnicosLista = ['Roberio', 'Ian', 'Jardson', 'Lucas']
-
 </script>

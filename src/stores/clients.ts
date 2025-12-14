@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Client } from '@/types/Client'
 import { getClients } from '@/services/client.service'
-import { createClients } from '@/services/client.service'
 
 export const useClientsStore = defineStore('clientes', {
   state: () => ({
