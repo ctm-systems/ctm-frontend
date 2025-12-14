@@ -5,7 +5,7 @@ import { useTipoAmostraStore } from '@/stores/tipoAmostra';
 import { useProcessStore } from '@/stores/process';
 import { useAmostrasStore } from '@/stores/amostra';
 import { onMounted, ref } from 'vue';
-import { createAmostras } from '@/services/amostra.service';
+import { attachProcessos, createAmostras } from '@/services/amostra.service';
 
 const clientsStore = useClientsStore()
 const tipoAmostraStore = useTipoAmostraStore()
@@ -20,16 +20,24 @@ const form = ref({
   dataRecebimento: '',
 })
 
+const processosSelecionados = ref<number[]>([])
+
 onMounted(() => {
   clientsStore.fetchClients()
   tipoAmostraStore.fetchTipoAmostras()
   processStore.fetchProcesses()
 })
 
+async function salvarProcessos(amostraId: number) {
+  if (!processosSelecionados.value.length) return
+
+  await attachProcessos(amostraId, processosSelecionados.value)
+}
+
 async function saveSample() {
   try {
     const sample = await createAmostras(form.value)
-
+    await salvarProcessos(sample.id)
     amostrasStore.addAmostra(sample)
   } catch (error) {
     console.error('Erro ao salvar a amostra:', error)
@@ -90,6 +98,7 @@ async function saveSample() {
             chips
             variant="outlined"
             density="compact"
+            v-model="processosSelecionados"
           />
 
           <v-text-field
