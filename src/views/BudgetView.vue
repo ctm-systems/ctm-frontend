@@ -29,10 +29,11 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
             density="compact"
             :items="['Amostra 1', 'Amostra 2', 'Amostra 3']"
           />
-          
+
             <TextInputComponent
                 placeholder-props="Valor do orçamento"
                 density="compact"
+                type-props="number"
               />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
