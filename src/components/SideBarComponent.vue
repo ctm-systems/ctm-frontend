@@ -1,13 +1,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router';
-import { api } from '@/services/api';
-import { getSuapUser } from '@/services/suap.service';
-import type { SuapUser } from '@/types/SuapUser';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter()
+const authStore = useAuthStore()
 
-const user = ref<SuapUser | null>(null)
+onMounted(() => {
+  if (!authStore.user) {
+    authStore.fetchUser()
+  }
+})
+
+async function logout() {
+  await authStore.logout()
+  router.push('/login')
+}
 
 const menu = ref([
   { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard', route: '/app' },
@@ -18,23 +26,6 @@ const menu = ref([
   { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel', route: '/app/excel/tratar' },
   { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo', route: '/app/laudos/gerar' },
 ])
-
-onMounted(async () => {
-  try {
-    user.value = await getSuapUser()
-  } catch (error) {
-    console.error('Erro ao buscar dados do usuário:', error)
-  }
-})
-
-async function logout() {
-  try {
-    await api.get('/logout')
-    router.push('/')
-  } catch (error) {
-    console.error('Erro ao fazer logout:', error)
-  }
-}
 </script>
 
 <template>
@@ -45,9 +36,9 @@ async function logout() {
   >
     <v-list>
       <v-list-item
-        :prepend-avatar="user?.foto || ''"
-        :title="user?.nome_usual || 'Nome do usuário'"
-        :subtitle="user?.identificacao || 'Matrícula'"
+        :prepend-avatar="authStore.user?.foto"
+        :title="authStore.user?.nome_usual"
+        :subtitle="authStore.user?.identificacao"
       />
     </v-list>
 

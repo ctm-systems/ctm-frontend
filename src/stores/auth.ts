@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { api } from '@/services/api'
+import { getSuapUser } from '@/services/suap.service'
+import type { SuapUser } from '@/types/SuapUser'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isAuthenticated: false,
-    user: null,
+    user: null as SuapUser | null,
     loading: false,
     error: '',
   }),
@@ -26,8 +28,22 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async fetchUser() {
+      this.loading = true
+      try {
+        this.user = await getSuapUser()
+        this.isAuthenticated = true
+      } catch {
+        this.user = null
+        this.isAuthenticated = false
+        throw new Error('Não autenticado')
+      } finally {
+        this.loading = false
+      }
+    },
+
     async logout() {
-      await api.post('/logout')
+      await api.get('/logout')
       this.isAuthenticated = false
       this.user = null
     },
