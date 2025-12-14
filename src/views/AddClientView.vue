@@ -65,13 +65,16 @@
 
             <v-col cols="12">
               <v-select
-                :items="tecnicoStore.tecnicos.map(tecnico => tecnico.nome)"
+                :items="tecnicoStore.tecnicos"
+                item-title="nome"
+                item-value="id"
                 label="Técnico(s) responsável(is)"
                 multiple
                 chips
                 variant="outlined"
                 class="rounded-lg"
                 density="compact"
+                v-model="tecnicoSelecionados"
               />
             </v-col>
           </v-row>
@@ -89,7 +92,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useClientsStore } from '@/stores/clients'
-import { createClients } from '@/services/client.service'
+import { createClients, attachTecnicos } from '@/services/client.service'
 import { useTecnicoStore } from '@/stores/tecnico'
 import TextInputComponent from '@/components/TextInputComponent.vue'
 
@@ -105,14 +108,22 @@ const form = ref({
   endereco: '',
 })
 
+const tecnicoSelecionados = ref<number[]>([])
+
 onMounted(() => {
   tecnicoStore.fetchTecnicos()
 })
 
+async function adicionarTecnicos(clientId: number) {
+  if (!tecnicoSelecionados.value.length) return
+
+  await attachTecnicos(clientId, tecnicoSelecionados.value)
+}
+
 async function saveClient() {
   try {
     const client = await createClients(form.value)
-
+    await adicionarTecnicos(client.id)
     clientsStore.addClient(client)
   } catch (error) {
     console.error('Erro ao salvar o cliente:', error)
