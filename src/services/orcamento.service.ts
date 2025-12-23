@@ -1,0 +1,12 @@
+import { api } from "./api"
+import type { Orcamento } from "@/types/Orçamento"
+
+export async function getOrcamentos(): Promise<Orcamento[]> {
+  const { data } = await api.get<Orcamento[]>("/orcamentos")
+  return data
+}
+
+export async function createOrcamento(payload: Partial<Orcamento>) {
+  const { data } = await api.post<Orcamento>("/orcamentos", payload)
+  return data
+}
