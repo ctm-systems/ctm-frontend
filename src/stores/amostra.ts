@@ -1,25 +1,26 @@
 import { defineStore } from "pinia"
 import type { Amostra } from "@/types/Amostra"
-import { getAmostras } from "@/services/amostra.service"
+import { getAmostras, createAmostras } from "@/services/amostra.service"
 
-export const useAmostrasStore = defineStore("amostras", {
+export const useAmostraStore = defineStore("amostra", {
   state: () => ({
     amostras: [] as Amostra[],
-    loading: false,
   }),
-
   actions: {
     async fetchAmostras() {
-      this.loading = true
       try {
         this.amostras = await getAmostras()
-      } finally {
-        this.loading = false
+      } catch (error) {
+        console.error("Failed to fetch amostras:", error)
       }
     },
-
-    addAmostra(amostra: Amostra) {
-      this.amostras.unshift(amostra)
+    async addAmostra(payload: Partial<Amostra>) {
+      try {
+        const newAmostra = await createAmostras(payload)
+        this.amostras.push(newAmostra)
+      } catch (error) {
+        console.error("Failed to create amostra:", error)
+      }
     },
   },
 })

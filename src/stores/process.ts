@@ -2,24 +2,23 @@ import { defineStore } from "pinia"
 import type { Process } from "@/types/Process"
 import { getProcesses } from "@/services/process.service"
 
-export const useProcessStore = defineStore("processos", {
+export const useProcessStore = defineStore("process", {
   state: () => ({
     processes: [] as Process[],
-    loading: false,
+    isLoading: false,
+    error: null as string | null,
   }),
-
   actions: {
     async fetchProcesses() {
-      this.loading = true
+      this.isLoading = true
+      this.error = null
       try {
         this.processes = await getProcesses()
+      } catch (err) {
+        this.error = (err as Error).message
       } finally {
-        this.loading = false
+        this.isLoading = false
       }
-    },
-
-    addProcess(process: Process) {
-      this.processes.unshift(process)
     },
   },
 })

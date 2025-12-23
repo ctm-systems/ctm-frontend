@@ -2,24 +2,23 @@ import { defineStore } from "pinia"
 import type { TipoAmostra } from "@/types/TipoAmostra"
 import { getTipoAmostras } from "@/services/tipoAmostra.service"
 
-export const useTipoAmostraStore = defineStore("tipoAmostras", {
+export const useTipoAmostraStore = defineStore("tipoAmostra", {
   state: () => ({
     tipoAmostras: [] as TipoAmostra[],
-    loading: false,
+    isLoading: false,
+    error: null as string | null,
   }),
-
   actions: {
     async fetchTipoAmostras() {
-      this.loading = true
+      this.isLoading = true
+      this.error = null
       try {
         this.tipoAmostras = await getTipoAmostras()
+      } catch (err) {
+        this.error = (err as Error).message
       } finally {
-        this.loading = false
+        this.isLoading = false
       }
-    },
-
-    addTipoAmostra(tipoAmostra: TipoAmostra) {
-      this.tipoAmostras.unshift(tipoAmostra)
     },
   },
 })
