@@ -14,12 +14,14 @@ export const useClientStore = defineStore("client", {
         console.error("Failed to fetch clients:", error)
       }
     },
-    async addClient(payload: Partial<Client>) {
+    async addClient(payload: Partial<Client>): Promise<Client | undefined> {
       try {
         const newClient = await createClients(payload)
         this.clients.push(newClient)
+        return newClient
       } catch (error) {
         console.error("Failed to create client:", error)
+        return undefined
       }
     },
     async attachTecnicosToClient(clientId: number, tecnicoIds: number[]) {

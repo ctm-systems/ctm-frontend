@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { useClientsStore } from '@/stores/clients'
+import { useClientStore } from '@/stores/clients'
 
-const clientsStore = useClientsStore()
+const clientsStore = useClientStore()
 
 const search = ref('')
 

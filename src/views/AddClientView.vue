@@ -91,12 +91,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useClientsStore } from '@/stores/clients'
-import { createClients, attachTecnicos } from '@/services/client.service'
+import { useClientStore } from '@/stores/clients'
 import { useTecnicoStore } from '@/stores/tecnico'
 import TextInputComponent from '@/components/TextInputComponent.vue'
 
-const clientsStore = useClientsStore()
+const clientsStore = useClientStore()
 const tecnicoStore = useTecnicoStore()
 
 const form = ref({
@@ -117,14 +116,15 @@ onMounted(() => {
 async function adicionarTecnicos(clientId: number) {
   if (!tecnicoSelecionados.value.length) return
 
-  await attachTecnicos(clientId, tecnicoSelecionados.value)
+  await clientsStore.attachTecnicosToClient(clientId, tecnicoSelecionados.value)
 }
 
 async function saveClient() {
   try {
-    const client = await createClients(form.value)
-    await adicionarTecnicos(client.id)
-    clientsStore.addClient(client)
+    const client = await clientsStore.addClient(form.value)
+    if (client) {
+      await adicionarTecnicos(client.id)
+    }
   } catch (error) {
     console.error('Erro ao salvar o cliente:', error)
   }
