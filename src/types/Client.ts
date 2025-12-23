@@ -7,4 +7,5 @@ export interface Client {
   cnpj?: string
   endereco: string
   createdAt: string
+  updatedAt: string
 }
