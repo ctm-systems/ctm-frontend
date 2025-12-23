@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import type { Amostra } from "@/types/Amostra"
-import { getAmostras, createAmostras } from "@/services/amostra.service"
+import { getAmostras, createAmostras, attachProcessos } from "@/services/amostra.service"
 
 export const useAmostraStore = defineStore("amostra", {
   state: () => ({
@@ -20,6 +20,13 @@ export const useAmostraStore = defineStore("amostra", {
         this.amostras.push(newAmostra)
       } catch (error) {
         console.error("Failed to create amostra:", error)
+      }
+    },
+    async attachProcessosToAmostra(amostraId: number, processoIds: number[]) {
+      try {
+        await attachProcessos(amostraId, processoIds)
+      } catch (error) {
+        console.error('Failed to attach processos to amostra:', error)
       }
     },
   },

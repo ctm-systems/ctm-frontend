@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Client } from '@/types/Client'
-import { getClients, createClients } from '@/services/client.service'
+import { getClients, createClients, attachTecnicos } from '@/services/client.service'
 
 export const useClientStore = defineStore("client", {
   state: () => ({
@@ -20,6 +20,13 @@ export const useClientStore = defineStore("client", {
         this.clients.push(newClient)
       } catch (error) {
         console.error("Failed to create client:", error)
+      }
+    },
+    async attachTecnicosToClient(clientId: number, tecnicoIds: number[]) {
+      try {
+        await attachTecnicos(clientId, tecnicoIds)
+      } catch (error) {
+        console.error('Failed to attach técnicos to client:', error)
       }
     },
   },
