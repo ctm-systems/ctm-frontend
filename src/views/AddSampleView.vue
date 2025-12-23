@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import TextInputComponent from '@/components/TextInputComponent.vue'
-import { useClientsStore } from '@/stores/clients'
+import { useClientStore } from '@/stores/clients'
 import { useTipoAmostraStore } from '@/stores/tipoAmostra';
 import { useProcessStore } from '@/stores/process';
-import { useAmostrasStore } from '@/stores/amostra';
+import { useAmostraStore } from '@/stores/amostra';
 import { onMounted, ref } from 'vue';
-import { attachProcessos, createAmostras } from '@/services/amostra.service';
 
-const clientsStore = useClientsStore()
+const clientsStore = useClientStore()
 const tipoAmostraStore = useTipoAmostraStore()
 const processStore = useProcessStore()
-const amostrasStore = useAmostrasStore()
+const amostrasStore = useAmostraStore()
 
 const form = ref({
   foto: null as File | null,
@@ -31,14 +30,29 @@ onMounted(() => {
 async function salvarProcessos(amostraId: number) {
   if (!processosSelecionados.value.length) return
 
-  await attachProcessos(amostraId, processosSelecionados.value)
+  await amostrasStore.attachProcessosToAmostra(amostraId, processosSelecionados.value)
 }
 
 async function saveSample() {
   try {
-    const sample = await createAmostras(form.value)
-    await salvarProcessos(sample.id)
-    amostrasStore.addAmostra(sample)
+    // Criar FormData para envio de arquivo
+    const formData = new FormData()
+    
+    // Adicionar dados básicos da amostra
+    formData.append('nome', form.value.nome)
+    if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
+    if (form.value.tipoAmostraId) formData.append('tipoAmostraId', form.value.tipoAmostraId.toString())
+    formData.append('dataRecebimento', form.value.dataRecebimento)
+    
+    // Adicionar arquivo se existir
+    if (form.value.foto) {
+      formData.append('foto', form.value.foto)
+    }
+
+    const sample = await amostrasStore.addAmostra(formData as FormData)
+    if (sample) {
+      await salvarProcessos(sample.id)
+    }
   } catch (error) {
     console.error('Erro ao salvar a amostra:', error)
   }

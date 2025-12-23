@@ -6,8 +6,12 @@ export async function getAmostras(): Promise<Amostra[]> {
   return data
 }
 
-export async function createAmostras(payload: Partial<Amostra>) {
-  const { data } = await api.post<Amostra>("/amostras", payload)
+export async function createAmostras(payload: Partial<Amostra> | FormData) {
+  const config = payload instanceof FormData 
+    ? { headers: { 'Content-Type': 'multipart/form-data' } }
+    : {}
+    
+  const { data } = await api.post<Amostra>("/amostras", payload, config)
   return data
 }
 

@@ -14,12 +14,14 @@ export const useAmostraStore = defineStore("amostra", {
         console.error("Failed to fetch amostras:", error)
       }
     },
-    async addAmostra(payload: Partial<Amostra>) {
+    async addAmostra(payload: Partial<Amostra> | FormData): Promise<Amostra | undefined> {
       try {
         const newAmostra = await createAmostras(payload)
         this.amostras.push(newAmostra)
+        return newAmostra
       } catch (error) {
         console.error("Failed to create amostra:", error)
+        return undefined
       }
     },
     async attachProcessosToAmostra(amostraId: number, processoIds: number[]) {
