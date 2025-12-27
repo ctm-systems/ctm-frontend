@@ -12,5 +12,5 @@ export async function createClients(payload: Partial<Client>) {
 }
 
 export async function attachTecnicos(clientId: number, tecnicos: number[]): Promise<Client> {
-  return api.post(`clientes/${clientId}/adicionar-tecnico`, { tecnicos }).then(res => res.data)
+  return api.post(`/clientes/${clientId}/adicionar-tecnico`, { tecnicos }).then(res => res.data)
 }
