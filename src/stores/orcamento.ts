@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import type { Orcamento } from "@/types/Orçamento"
-import { getOrcamentos, createOrcamento } from "@/services/orcamento.service"
+import { getOrcamentos, createOrcamento, attachAmostra } from "@/services/orcamento.service"
 
 export const useOrcamentoStore = defineStore("orcamento", {
   state: () => ({
@@ -18,8 +18,17 @@ export const useOrcamentoStore = defineStore("orcamento", {
       try {
         const newOrcamento = await createOrcamento(payload)
         this.orcamentos.push(newOrcamento)
+        return newOrcamento
       } catch (error) {
         console.error("Failed to create orçamento:", error)
+        return undefined
+      }
+    },
+    async attachAmostraToOrcamento(orcamentoId: number, amostraIds: number[]) {
+      try {
+        await attachAmostra(orcamentoId, amostraIds)
+      } catch (error) {
+        console.error('Failed to attach amostra to orçamento:', error)
       }
     },
   },
