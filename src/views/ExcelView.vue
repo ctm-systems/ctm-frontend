@@ -1,4 +1,54 @@
 <script setup lang="ts">
+import { useClientStore } from '@/stores/clients'
+import { useAmostraStore } from '@/stores/amostra'
+import { usePlanilhaStore } from '@/stores/planilha'
+import { onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
+
+const clientsStore = useClientStore()
+const amostrasStore = useAmostraStore()
+const planilhaStore = usePlanilhaStore()
+
+const amostrasSelecionadas = ref<number[]>([])
+
+onMounted(() => {
+  clientsStore.fetchClients()
+  amostrasStore.fetchAmostras()
+})
+
+const form = ref({
+  clienteId: null as number | null,
+  amostraId: null as number | null,
+  arquivo: null as File | null,
+})
+
+const amostrasDoCliente = computed(() => {
+  if (!form.value.clienteId) return []
+
+  return amostrasStore.amostras.filter(
+    amostra => amostra.clienteId === form.value.clienteId
+  )
+})
+
+watch(
+  () => form.value.clienteId,
+  () => {
+    amostrasSelecionadas.value = []
+  }
+)
+
+const savePlanilha = async () => {
+  try {
+    const formData = new FormData()
+    if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
+    if (form.value.amostraId) formData.append('amostraId', form.value.amostraId.toString())
+    if (form.value.arquivo) formData.append('arquivo', form.value.arquivo)
+
+    await planilhaStore.addPlanilha(formData as FormData)
+  } catch (error) {
+    console.error('Erro ao processar a planilha:', error)
+  }
+}
 </script>
 
 <template>
@@ -8,26 +58,37 @@
         <span class="text-h6 font-weight-bold">Tratamento de excel</span>
       </v-col>
       <v-col cols="12">
-        <v-form @submit.prevent>
+        <v-form @submit.prevent="savePlanilha">
           <v-select
             label="Cliente"
             variant="outlined"
             density="compact"
-            :items="['Cliente 1', 'Cliente 2', 'Cliente 3']"
+            :items="clientsStore.clients"
+            item-title="nome"
+            item-value="id"
+            v-model="form.clienteId"
           />
 
           <v-select
             label="Amostra"
             variant="outlined"
             density="compact"
-            :items="['Amostra 1', 'Amostra 2', 'Amostra 3']"
+            :items="amostrasDoCliente"
+            item-title="nome"
+            item-value="id"
+            v-model="form.amostraId"
+            :disabled="!form.clienteId"
           />
 
-          <v-file-upload
-            color="#EDEDED"
+          <v-file-input
+            label="Arquivo Excel"
+            variant="outlined"
             icon="mdi-file-edit"
             density="compact"
             title="Arraste ou clique para adicionar arquivo"
+            v-model="form.arquivo"
+            accept=".xlsx, .xls"
+            :disabled="!form.clienteId || !form.amostraId"
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end mt-4">

@@ -14,12 +14,14 @@ export const usePlanilhaStore = defineStore("planilha", {
         console.error("Failed to fetch planilhas:", error)
       }
     },
-    async addPlanilha(novaPlanilha: Planilha) {
+    async addPlanilha(payload: Partial<Planilha> | FormData): Promise<Planilha | undefined> {
       try {
-        const createdPlanilha = await createPlanilha(novaPlanilha)
-        this.planilhas.push(createdPlanilha)
+        const newPlanilha = await createPlanilha(payload)
+        this.planilhas.push(newPlanilha)
+        return newPlanilha
       } catch (error) {
         console.error("Failed to create planilha:", error)
+        return undefined
       }
     },
   },

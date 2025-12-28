@@ -1,6 +1,6 @@
 export interface Planilha {
   id: number
-  arquivo: number
+  arquivo: string
   laudoId: number | null
   createdAt: string
   updatedAt: string

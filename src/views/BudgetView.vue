@@ -66,12 +66,12 @@ async function saveBudget() {
       <v-col cols="12">
 
         <v-form @submit.prevent="saveBudget">
-            <TextInputComponent
-                placeholder-props="Identificação do orçamento"
-                density="compact"
-                v-model="form.identificacao"
-                :disabled="!form.clienteId"
-              />
+          <TextInputComponent
+            placeholder-props="Identificação do orçamento"
+            density="compact"
+            v-model="form.identificacao"
+            :disabled="!form.clienteId"
+          />
 
           <v-select
             label="Cliente"

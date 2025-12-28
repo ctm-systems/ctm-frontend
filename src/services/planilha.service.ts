@@ -6,7 +6,11 @@ export async function getPlanilhas(): Promise<Planilha[]> {
   return data
 }
 
-export async function createPlanilha(payload: Partial<Planilha>) {
-  const { data } = await api.post<Planilha>("/planilhas", payload)
+export async function createPlanilha(payload: Partial<Planilha> | FormData) {
+  const config = payload instanceof FormData
+    ? { headers: { 'Content-Type': 'multipart/form-data' } }
+    : {}
+
+  const { data } = await api.post<Planilha>("/planilhas", payload, config)
   return data
 }
