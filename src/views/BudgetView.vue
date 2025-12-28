@@ -3,7 +3,7 @@ import TextInputComponent from '@/components/TextInputComponent.vue'
 import { useClientStore } from '@/stores/clients'
 import { useAmostraStore } from '@/stores/amostra'
 import { useOrcamentoStore } from '@/stores/orcamento'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 
 const clientsStore = useClientStore()
 const amostrasStore = useAmostraStore()
@@ -21,10 +21,28 @@ onMounted(() => {
   amostrasStore.fetchAmostras()
 })
 
+const amostrasDoCliente = computed(() => {
+  if (!form.value.clienteId) return []
+
+  return amostrasStore.amostras.filter(
+    amostra => amostra.clienteId === form.value.clienteId
+  )
+})
+
+watch(
+  () => form.value.clienteId,
+  () => {
+    amostrasSelecionadas.value = []
+  }
+)
+
 async function adicionarAmostra(budgetId: number) {
   if (!amostrasSelecionadas.value.length) return
 
-  await orcamentoStore.attachAmostraToOrcamento(budgetId, amostrasSelecionadas.value)
+  await orcamentoStore.attachAmostraToOrcamento(
+    budgetId,
+    amostrasSelecionadas.value
+  )
 }
 
 async function saveBudget() {
@@ -52,6 +70,7 @@ async function saveBudget() {
                 placeholder-props="Identificação do orçamento"
                 density="compact"
                 v-model="form.identificacao"
+                :disabled="!form.clienteId"
               />
 
           <v-select
@@ -64,15 +83,16 @@ async function saveBudget() {
             v-model="form.clienteId"
           />
 
-            <v-select
+          <v-select
             label="Amostra"
             variant="outlined"
             density="compact"
-            :items="amostrasStore.amostras"
+            :items="amostrasDoCliente"
             item-title="nome"
             item-value="id"
             multiple
             chips
+            :disabled="!form.clienteId"
             v-model="amostrasSelecionadas"
           />
 
