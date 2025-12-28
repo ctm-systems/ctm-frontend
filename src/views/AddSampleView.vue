@@ -37,13 +37,13 @@ async function saveSample() {
   try {
     // Criar FormData para envio de arquivo
     const formData = new FormData()
-    
+
     // Adicionar dados básicos da amostra
     formData.append('nome', form.value.nome)
     if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
     if (form.value.tipoAmostraId) formData.append('tipoAmostraId', form.value.tipoAmostraId.toString())
     formData.append('dataRecebimento', form.value.dataRecebimento)
-    
+
     // Adicionar arquivo se existir
     if (form.value.foto) {
       formData.append('foto', form.value.foto)
@@ -74,6 +74,7 @@ async function saveSample() {
             density="compact"
             v-model="form.foto"
             accept="image/*"
+            :disabled="!form.clienteId"
           />
 
           <v-select
@@ -91,6 +92,7 @@ async function saveSample() {
             variant="outlined"
             density="compact"
             v-model="form.nome"
+            :disabled="!form.clienteId"
           />
 
           <v-select
@@ -101,6 +103,7 @@ async function saveSample() {
             variant="outlined"
             density="compact"
             v-model="form.tipoAmostraId"
+            :disabled="!form.clienteId"
           />
 
           <v-select
@@ -113,6 +116,7 @@ async function saveSample() {
             variant="outlined"
             density="compact"
             v-model="processosSelecionados"
+            :disabled="!form.clienteId"
           />
 
           <v-text-field
@@ -121,6 +125,7 @@ async function saveSample() {
             variant="outlined"
             density="compact"
             v-model="form.dataRecebimento"
+            :disabled="!form.clienteId"
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
