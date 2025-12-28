@@ -11,6 +11,10 @@ export async function createClients(payload: Partial<Client>) {
   return data
 }
 
+export async function deleteClient(clientId: number): Promise<void> {
+  return api.delete(`/clientes/${clientId}`).then(res => res.data)
+}
+
 export async function attachTecnicos(clientId: number, tecnicos: number[]): Promise<Client> {
   return api.post(`/clientes/${clientId}/adicionar-tecnico`, { tecnicos }).then(res => res.data)
 }

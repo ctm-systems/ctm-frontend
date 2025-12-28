@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Client } from '@/types/Client'
-import { getClients, createClients, attachTecnicos } from '@/services/client.service'
+import { getClients, createClients, attachTecnicos, deleteClient } from '@/services/client.service'
 
 export const useClientStore = defineStore("client", {
   state: () => ({
@@ -22,6 +22,14 @@ export const useClientStore = defineStore("client", {
       } catch (error) {
         console.error("Failed to create client:", error)
         return undefined
+      }
+    },
+    async deleteClientById(clientId: number) {
+      try {
+        await deleteClient(clientId)
+        this.clients = this.clients.filter(client => client.id !== clientId)
+      } catch (error) {
+        console.error('Failed to delete client:', error)
       }
     },
     async attachTecnicosToClient(clientId: number, tecnicoIds: number[]) {

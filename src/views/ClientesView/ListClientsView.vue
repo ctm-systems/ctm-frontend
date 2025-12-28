@@ -21,6 +21,10 @@ const filteredClients = computed(() => {
     client.nome.toLowerCase().includes(search.value.toLowerCase())
   )
 })
+
+const deleteClient = (clientId: number) => {
+  clientsStore.deleteClientById(clientId)
+}
 </script>
 
 <template>
@@ -73,6 +77,7 @@ const filteredClients = computed(() => {
                 </div>
               </v-col>
               <v-col class="d-flex justify-end">
+                <v-btn icon="mdi-delete" elevation="0" class="text-error" @click="deleteClient(client.id)"/>
                 <v-btn icon="mdi-arrow-right" elevation="0"/>
               </v-col>
             </v-row>
