@@ -20,6 +20,7 @@ const form = ref({
   clienteId: null as number | null,
   amostraId: null as number | null,
   arquivo: null as File | null,
+  identificacao: '',
 })
 
 const amostrasDoCliente = computed(() => {
@@ -43,6 +44,7 @@ const savePlanilha = async () => {
     if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
     if (form.value.amostraId) formData.append('amostraId', form.value.amostraId.toString())
     if (form.value.arquivo) formData.append('arquivo', form.value.arquivo)
+    if (form.value.identificacao) formData.append('identificacao', form.value.identificacao)
 
     await planilhaStore.addPlanilha(formData as FormData)
   } catch (error) {
@@ -78,6 +80,14 @@ const savePlanilha = async () => {
             item-value="id"
             v-model="form.amostraId"
             :disabled="!form.clienteId"
+          />
+
+          <v-text-field
+            label="Identificação da planilha"
+            variant="outlined"
+            density="compact"
+            v-model="form.identificacao"
+            :disabled="!form.clienteId || !form.amostraId"
           />
 
           <v-file-input
