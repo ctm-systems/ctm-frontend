@@ -95,6 +95,7 @@ const saveLaudo = async () => {
             v-model="form.orcamentoId"
             variant="outlined"
             density="compact"
+            :disabled="!form.clienteId"
           />
 
           <v-select
@@ -107,6 +108,7 @@ const saveLaudo = async () => {
             chips
             variant="outlined"
             density="compact"
+            :disabled="!form.orcamentoId"
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
