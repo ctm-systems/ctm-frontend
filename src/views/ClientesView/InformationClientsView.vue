@@ -5,6 +5,7 @@ import { useClientStore } from '@/stores/clients'
 import { useAmostraStore } from '@/stores/amostra'
 import type { Client } from '@/types/Client'
 import type { Amostra } from '@/types/Amostra'
+import { API_URL } from '@/config/env'
 
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
 
@@ -94,7 +95,7 @@ const activeTab = ref('amostras')
     >
       <v-icon size="64" color="grey">mdi-account-off</v-icon>
       <h3 class="mt-3">Cliente não encontrado</h3>
-      <v-btn class="mt-3" @click="$router.push({ name: 'listar-clientes' })">
+      <v-btn class="mt-3" @click="$router.push({ name: 'clientes' })">
         Voltar para lista de clientes
       </v-btn>
     </div>
@@ -164,7 +165,7 @@ const activeTab = ref('amostras')
           <v-row>
             <v-col v-for="amostra in amostras" :key="amostra.id" cols="12" md="3">
               <v-card class="rounded-lg" elevation="2">
-                <v-img class="bg-red" :src="amostra.foto || '#'" height="150" />
+                <v-img :src="`${API_URL}${amostra.foto}`" height="150" crossorigin="anonymous" cover />
                 <v-card-text class="d-flex flex-column text-center">
                   <span class="text-subtitle-1 font-weight-bold mb-2">{{ amostra.nome }}</span>
                   <v-btn class="text-subtitle-1 text-orange" variant="text">Detalhe</v-btn>
