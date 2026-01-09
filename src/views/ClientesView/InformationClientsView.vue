@@ -2,14 +2,18 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useClientStore } from '@/stores/clients'
+import { useAmostraStore } from '@/stores/amostra'
 import type { Client } from '@/types/Client'
+import type { Amostra } from '@/types/Amostra'
 
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
 
 const route = useRoute()
 const clientStore = useClientStore()
+const amostraStore = useAmostraStore()
 
 const client = ref<Client | null>(null)
+const amostras = ref<Amostra[]>([])
 const loading = ref(true)
 
 // Pegar o ID do cliente da rota e buscar os dados
@@ -19,6 +23,8 @@ onMounted(async () => {
     const fetchedClient = await clientStore.fetchClientById(clientId, true) // true para carregar técnicos
     if (fetchedClient) {
       client.value = fetchedClient
+      await amostraStore.fetchAmostras()
+      amostras.value = amostraStore.amostras.filter((a) => a.clienteId === clientId)
     }
   }
   loading.value = false
@@ -35,7 +41,7 @@ const clientInfo = computed(() => {
       cep: '',
       cpfCnpj: '',
       email: '',
-      telefone: ''
+      telefone: '',
     }
   }
 
@@ -47,7 +53,7 @@ const clientInfo = computed(() => {
     cep: client.value.cep,
     cpfCnpj: client.value.cpf || client.value.cnpj || '',
     email: client.value.email,
-    telefone: client.value.telefone
+    telefone: client.value.telefone,
   }
 })
 
@@ -62,15 +68,8 @@ const tecnicoResponsavel = computed(() => {
   }
 
   // Se houver mais de um técnico, mostrar todos separados por vírgula
-  return client.value.tecnicos.map(tecnico => tecnico.nome).join(', ')
+  return client.value.tecnicos.map((tecnico) => tecnico.nome).join(', ')
 })
-
-const amostras = [
-  { id: 1, image: '#', identificacao: 'Identificação', detalhe: 'Detalhe' },
-  { id: 2, image: '#', identificacao: 'Identificação', detalhe: 'Detalhe' },
-  { id: 3, image: '#', identificacao: 'Identificação', detalhe: 'Detalhe' },
-  { id: 4, image: '#', identificacao: 'Identificação', detalhe: 'Detalhe' },
-]
 
 const orcamentos = [
   { id: 1, nome: 'Orçamento X' },
@@ -83,16 +82,16 @@ const activeTab = ref('amostras')
 <template>
   <v-container fluid>
     <!-- Loading state -->
-    <div v-if="loading" class="d-flex justify-center align-center" style="min-height: 200px;">
-      <v-progress-circular
-        indeterminate
-        color="orange"
-        size="64"
-      />
+    <div v-if="loading" class="d-flex justify-center align-center" style="min-height: 200px">
+      <v-progress-circular indeterminate color="orange" size="64" />
     </div>
 
     <!-- Cliente não encontrado -->
-    <div v-else-if="!client" class="d-flex justify-center align-center flex-column" style="min-height: 200px;">
+    <div
+      v-else-if="!client"
+      class="d-flex justify-center align-center flex-column"
+      style="min-height: 200px"
+    >
       <v-icon size="64" color="grey">mdi-account-off</v-icon>
       <h3 class="mt-3">Cliente não encontrado</h3>
       <v-btn class="mt-3" @click="$router.push({ name: 'listar-clientes' })">
@@ -124,12 +123,16 @@ const activeTab = ref('amostras')
         </div>
       </v-col>
 
-      <v-col cols=12>
+      <v-col cols="12">
         <!-- Seção de Tabs -->
         <div class="d-flex justify-center mb-4">
           <div class="d-flex align-center">
             <v-btn
-              :class="activeTab === 'amostras' ? 'text-orange font-weight-bold' : 'text-black font-weight-bold'"
+              :class="
+                activeTab === 'amostras'
+                  ? 'text-orange font-weight-bold'
+                  : 'text-black font-weight-bold'
+              "
               variant="text"
               @click="activeTab = 'amostras'"
               class="text-subtitle-1"
@@ -137,10 +140,14 @@ const activeTab = ref('amostras')
               Amostras
             </v-btn>
 
-            <v-divider vertical class="mx-2" style="height: 38px;"></v-divider>
+            <v-divider vertical class="mx-2" style="height: 38px"></v-divider>
 
             <v-btn
-              :class="activeTab === 'orcamentos' ? 'text-orange font-weight-bold' : 'text-black font-weight-bold'"
+              :class="
+                activeTab === 'orcamentos'
+                  ? 'text-orange font-weight-bold'
+                  : 'text-black font-weight-bold'
+              "
               variant="text"
               @click="activeTab = 'orcamentos'"
               class="text-subtitle-1"
@@ -155,16 +162,11 @@ const activeTab = ref('amostras')
         <!-- Lista de Amostras -->
         <div v-if="activeTab === 'amostras'">
           <v-row>
-            <v-col
-              v-for="amostra in amostras"
-              :key="amostra.id"
-              cols="12"
-              md="3"
-            >
+            <v-col v-for="amostra in amostras" :key="amostra.id" cols="12" md="3">
               <v-card class="rounded-lg" elevation="2">
-                <v-img class="bg-red" :src="amostra.image" height="150"/>
+                <v-img class="bg-red" :src="amostra.foto || '#'" height="150" />
                 <v-card-text class="d-flex flex-column text-center">
-                  <span class="text-subtitle-1 font-weight-bold mb-2">{{ amostra.identificacao }}</span>
+                  <span class="text-subtitle-1 font-weight-bold mb-2">{{ amostra.nome }}</span>
                   <v-btn class="text-subtitle-1 text-orange" variant="text">Detalhe</v-btn>
                 </v-card-text>
               </v-card>
@@ -183,8 +185,8 @@ const activeTab = ref('amostras')
                       <span class="text-subtitle-1 font-weight-bold">{{ orcamento.nome }}</span>
                     </v-col>
                     <v-col cols="6" class="d-flex ga-2 justify-end">
-                      <v-btn icon="mdi-download" density="compact" variant="text"/>
-                      <v-btn icon="mdi-chevron-right" density="compact" variant="text"/>
+                      <v-btn icon="mdi-download" density="compact" variant="text" />
+                      <v-btn icon="mdi-chevron-right" density="compact" variant="text" />
                     </v-col>
                   </v-row>
                   <v-select
@@ -205,7 +207,7 @@ const activeTab = ref('amostras')
 
 <style scoped>
 .text-orange {
-  color: #E48020;
+  color: #e48020;
 }
 
 .text-black {
