@@ -6,6 +6,12 @@ export async function getClients(): Promise<Client[]> {
   return data
 }
 
+export async function getClientById(clientId: number, carregarTecnicos: boolean = false): Promise<Client> {
+  const params = carregarTecnicos ? '?carregarTecnicos=true' : ''
+  const { data } = await api.get<Client>(`/clientes/${clientId}${params}`)
+  return data
+}
+
 export async function createClients(payload: Partial<Client>) {
   const { data } = await api.post<Client>("/clientes", payload)
   return data

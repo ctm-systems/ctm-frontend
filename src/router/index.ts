@@ -32,6 +32,11 @@ const router = createRouter({
           component: () => import('../views/ClientesView/ListClientsView.vue')
         },
         {
+          path: '/app/clientes/informacoes/:id',
+          name: 'informacoes-cliente',
+          component: () => import('../views/ClientesView/InformationClientsView.vue')
+        },
+        {
           path: '/app/clientes/cadastrar',
           name: 'cadastrar-cliente',
           component: () => import('../views/AddClientView.vue')

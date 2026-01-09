@@ -78,7 +78,7 @@ const deleteClient = (clientId: number) => {
               </v-col>
               <v-col class="d-flex justify-end">
                 <v-btn icon="mdi-delete" elevation="0" class="text-error" @click="deleteClient(client.id)"/>
-                <v-btn icon="mdi-arrow-right" elevation="0"/>
+                <v-btn icon="mdi-arrow-right" elevation="0" @click="$router.push({ name: 'informacoes-cliente', params: { id: client.id } })" />
               </v-col>
             </v-row>
           </v-card-text>

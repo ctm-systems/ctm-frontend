@@ -1,21 +1,69 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useClientStore } from '@/stores/clients'
+import type { Client } from '@/types/Client'
 
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
 
-// Dados do cliente (mockados)
-const clientInfo = {
-  nome: 'João',
-  dataRecebimento: '12/12/2025',
-  codigoOrcamento: '0099/2025',
-  endereco: 'Rua João, 00, Cidade',
-  cep: '00000-000',
-  cpfCnpj: '000.000.000-00',
-  email: 'joao@email.com',
-  telefone: '+55 84 9 9999-9999'
-}
+const route = useRoute()
+const clientStore = useClientStore()
 
-const tecnicoResponsavel = 'Maria'
+const client = ref<Client | null>(null)
+const loading = ref(true)
+
+// Pegar o ID do cliente da rota e buscar os dados
+onMounted(async () => {
+  const clientId = Number(route.params.id)
+  if (clientId) {
+    const fetchedClient = await clientStore.fetchClientById(clientId, true) // true para carregar técnicos
+    if (fetchedClient) {
+      client.value = fetchedClient
+    }
+  }
+  loading.value = false
+})
+
+// Dados do cliente formatados para o componente
+const clientInfo = computed(() => {
+  if (!client.value) {
+    return {
+      nome: '',
+      dataRecebimento: '',
+      codigoOrcamento: '',
+      endereco: '',
+      cep: '',
+      cpfCnpj: '',
+      email: '',
+      telefone: ''
+    }
+  }
+
+  return {
+    nome: client.value.nome,
+    dataRecebimento: new Date(client.value.createdAt).toLocaleDateString('pt-BR'),
+    codigoOrcamento: '', // Esta informação não está no tipo Client, pode vir de outro lugar
+    endereco: client.value.endereco,
+    cep: client.value.cep,
+    cpfCnpj: client.value.cpf || client.value.cnpj || '',
+    email: client.value.email,
+    telefone: client.value.telefone
+  }
+})
+
+// Computed para formatar os nomes dos técnicos
+const tecnicoResponsavel = computed(() => {
+  if (!client.value?.tecnicos || client.value.tecnicos.length === 0) {
+    return 'Nenhum técnico associado'
+  }
+
+  if (client.value.tecnicos.length === 1) {
+    return client.value.tecnicos[0]?.nome
+  }
+
+  // Se houver mais de um técnico, mostrar todos separados por vírgula
+  return client.value.tecnicos.map(tecnico => tecnico.nome).join(', ')
+})
 
 const amostras = [
   { id: 1, image: '#', identificacao: 'Identificação', detalhe: 'Detalhe' },
@@ -34,7 +82,26 @@ const activeTab = ref('amostras')
 
 <template>
   <v-container fluid>
-    <v-row>
+    <!-- Loading state -->
+    <div v-if="loading" class="d-flex justify-center align-center" style="min-height: 200px;">
+      <v-progress-circular
+        indeterminate
+        color="orange"
+        size="64"
+      />
+    </div>
+
+    <!-- Cliente não encontrado -->
+    <div v-else-if="!client" class="d-flex justify-center align-center flex-column" style="min-height: 200px;">
+      <v-icon size="64" color="grey">mdi-account-off</v-icon>
+      <h3 class="mt-3">Cliente não encontrado</h3>
+      <v-btn class="mt-3" @click="$router.push({ name: 'listar-clientes' })">
+        Voltar para lista de clientes
+      </v-btn>
+    </div>
+
+    <!-- Dados do cliente -->
+    <v-row v-else>
       <v-col cols="12">
         <CardInformationClientComponent
           :nome="clientInfo.nome"

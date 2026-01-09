@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Client } from '@/types/Client'
-import { getClients, createClients, attachTecnicos, deleteClient } from '@/services/client.service'
+import { getClients, getClientById, createClients, attachTecnicos, deleteClient } from '@/services/client.service'
 
 export const useClientStore = defineStore("client", {
   state: () => ({
@@ -12,6 +12,15 @@ export const useClientStore = defineStore("client", {
         this.clients = await getClients()
       } catch (error) {
         console.error("Failed to fetch clients:", error)
+      }
+    },
+    async fetchClientById(clientId: number, carregarTecnicos: boolean = false): Promise<Client | undefined> {
+      try {
+        const client = await getClientById(clientId, carregarTecnicos)
+        return client
+      } catch (error) {
+        console.error("Failed to fetch client by ID:", error)
+        return undefined
       }
     },
     async addClient(payload: Partial<Client>): Promise<Client | undefined> {
