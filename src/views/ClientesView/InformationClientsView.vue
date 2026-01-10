@@ -3,8 +3,10 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useClientStore } from '@/stores/clients'
 import { useAmostraStore } from '@/stores/amostra'
+import { useOrcamentoStore } from '@/stores/orcamento'
 import type { Client } from '@/types/Client'
 import type { Amostra } from '@/types/Amostra'
+import type { Orcamento } from '@/types/Orçamento'
 import { API_URL } from '@/config/env'
 
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
@@ -12,9 +14,11 @@ import CardInformationClientComponent from '@/components/CardInformationClientCo
 const route = useRoute()
 const clientStore = useClientStore()
 const amostraStore = useAmostraStore()
+const orcamentoStore = useOrcamentoStore()
 
 const client = ref<Client | null>(null)
 const amostras = ref<Amostra[]>([])
+const orcamentos = ref<Orcamento[]>([])
 const loading = ref(true)
 
 // Pegar o ID do cliente da rota e buscar os dados
@@ -26,6 +30,8 @@ onMounted(async () => {
       client.value = fetchedClient
       await amostraStore.fetchAmostras()
       amostras.value = amostraStore.amostras.filter((a) => a.clienteId === clientId)
+      await orcamentoStore.fetchOrcamentos()
+      orcamentos.value = orcamentoStore.orcamentos.filter((o) => o.clienteId === clientId)
     }
   }
   loading.value = false
@@ -71,11 +77,6 @@ const tecnicoResponsavel = computed(() => {
   // Se houver mais de um técnico, mostrar todos separados por vírgula
   return client.value.tecnicos.map((tecnico) => tecnico.nome).join(', ')
 })
-
-const orcamentos = [
-  { id: 1, nome: 'Orçamento X' },
-  { id: 2, nome: 'Orçamento Y' },
-]
 
 const activeTab = ref('amostras')
 </script>
@@ -165,7 +166,12 @@ const activeTab = ref('amostras')
           <v-row>
             <v-col v-for="amostra in amostras" :key="amostra.id" cols="12" md="3">
               <v-card class="rounded-lg" elevation="2">
-                <v-img :src="`${API_URL}${amostra.foto}`" height="150" crossorigin="anonymous" cover />
+                <v-img
+                  :src="`${API_URL}${amostra.foto}`"
+                  height="150"
+                  crossorigin="anonymous"
+                  cover
+                />
                 <v-card-text class="d-flex flex-column text-center">
                   <span class="text-subtitle-1 font-weight-bold mb-2">{{ amostra.nome }}</span>
                   <v-btn class="text-subtitle-1 text-orange" variant="text">Detalhe</v-btn>
@@ -183,7 +189,9 @@ const activeTab = ref('amostras')
                 <v-card-text class="d-flex flex-column ga-5">
                   <v-row>
                     <v-col cols="6">
-                      <span class="text-subtitle-1 font-weight-bold">{{ orcamento.nome }}</span>
+                      <span class="text-subtitle-1 font-weight-bold">{{
+                        orcamento.identificacao
+                      }}</span>
                     </v-col>
                     <v-col cols="6" class="d-flex ga-2 justify-end">
                       <v-btn icon="mdi-download" density="compact" variant="text" />
