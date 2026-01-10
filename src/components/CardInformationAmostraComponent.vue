@@ -25,7 +25,13 @@ const imagemAmostra = computed(() => {
       <v-row>
         <!-- Foto da Amostra -->
         <v-col cols="12" md="3" class="d-none d-md-flex">
-          <v-img :src="imagemAmostra" class="rounded-lg" height="100%" />
+          <v-img
+            :src="imagemAmostra"
+            class="rounded-lg"
+            height="100"
+            crossorigin="anonymous"
+            cover
+          />
         </v-col>
 
         <!-- Informações da Amostra -->
