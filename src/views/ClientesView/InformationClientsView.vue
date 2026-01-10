@@ -196,7 +196,12 @@ const updateOrcamentoStatus = async (orcamentoId: number, newStatus: StatusOrcam
                 />
                 <v-card-text class="d-flex flex-column text-center">
                   <span class="text-subtitle-1 font-weight-bold mb-2">{{ amostra.nome }}</span>
-                  <v-btn class="text-subtitle-1 text-orange" variant="text">Detalhe</v-btn>
+                  <v-btn
+                    class="text-subtitle-1 text-orange"
+                    variant="text"
+                    @click="$router.push({ name: 'detalhes-amostra', params: { id: amostra.id } })"
+                    >Detalhe</v-btn
+                  >
                 </v-card-text>
               </v-card>
             </v-col>
