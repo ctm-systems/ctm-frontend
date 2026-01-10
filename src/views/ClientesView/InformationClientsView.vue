@@ -92,7 +92,7 @@ const updateOrcamentoStatus = async (orcamentoId: number, newStatus: StatusOrcam
   try {
     await orcamentoStore.updateStatus(orcamentoId, newStatus)
     // Atualizar a lista local também
-    const orcamento = orcamentos.value.find(o => o.id === orcamentoId)
+    const orcamento = orcamentos.value.find((o) => o.id === orcamentoId)
     if (orcamento) {
       orcamento.status = newStatus
     }
@@ -199,7 +199,12 @@ const updateOrcamentoStatus = async (orcamentoId: number, newStatus: StatusOrcam
                   <v-btn
                     class="text-subtitle-1 text-orange"
                     variant="text"
-                    @click="$router.push({ name: 'detalhes-amostra', params: { id: amostra.id } })"
+                    @click="
+                      $router.push({
+                        name: 'detalhes-amostra',
+                        params: { id: client.id, amostraId: amostra.id },
+                      })
+                    "
                     >Detalhe</v-btn
                   >
                 </v-card-text>
