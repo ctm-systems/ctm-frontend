@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/login',
     },
     {
       path: '/login',
@@ -15,9 +15,9 @@ const router = createRouter({
         {
           path: '',
           name: 'login',
-          component: () => import('../views/LoginView.vue')
+          component: () => import('../views/LoginView.vue'),
         },
-      ]
+      ],
     },
     {
       path: '/app',
@@ -29,41 +29,46 @@ const router = createRouter({
         {
           path: '/app/clientes',
           name: 'clientes',
-          component: () => import('../views/ClientesView/ListClientsView.vue')
+          component: () => import('../views/ClientesView/ListClientsView.vue'),
         },
         {
           path: '/app/clientes/informacoes/:id',
           name: 'informacoes-cliente',
-          component: () => import('../views/ClientesView/InformationClientsView.vue')
+          component: () => import('../views/ClientesView/InformationClientsView.vue'),
+        },
+        {
+          path: '/app/clientes/informacoes/:id/detalhes/:amostraId',
+          name: 'detalhes-amostra',
+          component: () => import('../views/ClientesView/InformationAmostrasView.vue'),
         },
         {
           path: '/app/clientes/cadastrar',
           name: 'cadastrar-cliente',
-          component: () => import('../views/AddClientView.vue')
+          component: () => import('../views/AddClientView.vue'),
         },
         {
           path: '/app/amostras/cadastrar',
           name: 'cadastrar-amostra',
-          component: () => import('../views/AddSampleView.vue')
+          component: () => import('../views/AddSampleView.vue'),
         },
 
         {
           path: '/app/orcamentos/gerar',
           name: 'gerar-orcamento',
-          component: () => import('../views/BudgetView.vue')
+          component: () => import('../views/BudgetView.vue'),
         },
 
         {
           path: '/app/excel/tratar',
           name: 'tratar-excel',
-          component: () => import('../views/ExcelView.vue')
+          component: () => import('../views/ExcelView.vue'),
         },
         {
           path: '/app/laudos/gerar',
           name: 'gerar-laudo',
-          component: () => import('../views/GerarLaudoView.vue')
-        }
-      ]
+          component: () => import('../views/GerarLaudoView.vue'),
+        },
+      ],
     },
   ],
 })
