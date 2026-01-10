@@ -6,7 +6,7 @@ import { useAmostraStore } from '@/stores/amostra'
 import { useOrcamentoStore } from '@/stores/orcamento'
 import type { Client } from '@/types/Client'
 import type { Amostra } from '@/types/Amostra'
-import type { Orcamento } from '@/types/Orçamento'
+import { type Orcamento, StatusOrcamento } from '@/types/Orçamento'
 import { API_URL } from '@/config/env'
 
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
@@ -79,6 +79,28 @@ const tecnicoResponsavel = computed(() => {
 })
 
 const activeTab = ref('amostras')
+
+// Mapear os status do enum para os valores de exibição
+const statusOptions = [
+  { title: 'Pendente', value: StatusOrcamento.PENDENTE },
+  { title: 'Aprovado', value: StatusOrcamento.APROVADO },
+  { title: 'Recusado', value: StatusOrcamento.RECUSADO },
+]
+
+// Função para atualizar o status do orçamento
+const updateOrcamentoStatus = async (orcamentoId: number, newStatus: StatusOrcamento) => {
+  try {
+    await orcamentoStore.updateStatus(orcamentoId, newStatus)
+    // Atualizar a lista local também
+    const orcamento = orcamentos.value.find(o => o.id === orcamentoId)
+    if (orcamento) {
+      orcamento.status = newStatus
+    }
+  } catch (error) {
+    console.error('Erro ao atualizar status do orçamento:', error)
+    // Aqui você pode adicionar uma notificação de erro se tiver um sistema de notificações
+  }
+}
 </script>
 
 <template>
@@ -200,7 +222,9 @@ const activeTab = ref('amostras')
                   </v-row>
                   <v-select
                     label="Status"
-                    :items="['Em preparação', 'Em análise', 'Finalizado', 'Cancelado']"
+                    :items="statusOptions"
+                    :model-value="orcamento.status"
+                    @update:model-value="(value) => updateOrcamentoStatus(orcamento.id, value)"
                     density="compact"
                     variant="outlined"
                   />

@@ -14,3 +14,8 @@ export async function createOrcamento(payload: Partial<Orcamento>) {
 export async function attachAmostra(orcamentoId: number, amostras: number[]): Promise<Orcamento> {
   return await api.post(`/orcamentos/${orcamentoId}/adicionar-amostra`, { amostras }).then(res => res.data)
 }
+
+export async function updateOrcamentoStatus(orcamentoId: number, status: string): Promise<Orcamento> {
+  const { data } = await api.put<Orcamento>(`/orcamentos/${orcamentoId}`, { status })
+  return data
+}
