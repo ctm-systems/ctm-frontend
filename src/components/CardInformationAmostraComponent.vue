@@ -1,23 +1,31 @@
 <script setup lang="ts">
-defineProps({
-  identificacao: String,
-  tipoAmostra: String,
-  processos: String,
-  foto: String || null,
+import { computed } from 'vue'
+import { API_URL } from '@/config/env'
+
+const props = defineProps<{
+  identificacao?: string
+  tipoAmostra?: string
+  processos?: string
+  foto?: string | null
+}>()
+
+// Computed para ter uma imagem placeholder quando não houver foto
+const imagemAmostra = computed(() => {
+  if (props.foto && !props.foto.startsWith('http')) {
+    return `${API_URL}${props.foto}`
+  }
+  return props.foto || 'https://via.placeholder.com/150?text=Sem+Foto'
 })
 </script>
 
 <template>
   <!-- Seção de Informações da Amostra -->
-  <v-card
-    class="rounded-lg"
-    elevation="2"
-  >
+  <v-card class="rounded-lg" elevation="2">
     <v-card-text class="pa-5">
       <v-row>
         <!-- Foto da Amostra -->
         <v-col cols="12" md="3" class="d-none d-md-flex">
-          <v-img :src="foto" class="bg-red rounded-lg" height="150"/>
+          <v-img :src="imagemAmostra" class="rounded-lg" height="100%" />
         </v-col>
 
         <!-- Informações da Amostra -->
