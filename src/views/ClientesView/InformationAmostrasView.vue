@@ -56,6 +56,7 @@ const arquivos = ref([
       <v-col cols="12">
         <CardInformationAmostraComponent
           :identificacao="amostra.nome"
+          :dataRecebimento="amostra.dataRecebimento"
           :tipoAmostra="tipoAmostraNome"
           :processos="processosFormatados"
           :foto="amostra.foto"

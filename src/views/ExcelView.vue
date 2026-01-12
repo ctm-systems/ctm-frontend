@@ -38,7 +38,10 @@ watch(
   }
 )
 
+const loading = ref(false)
+
 const savePlanilha = async () => {
+  loading.value = true
   try {
     const formData = new FormData()
     if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
@@ -49,6 +52,8 @@ const savePlanilha = async () => {
     await planilhaStore.addPlanilha(formData as FormData)
   } catch (error) {
     console.error('Erro ao processar a planilha:', error)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -103,7 +108,7 @@ const savePlanilha = async () => {
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end mt-4">
             <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
-            <v-btn color="#00A400" type="submit">Gerar arquivo</v-btn>
+            <v-btn color="#00A400" type="submit" :loading="loading">Gerar arquivo</v-btn>
           </div>
         </v-form>
       </v-col>

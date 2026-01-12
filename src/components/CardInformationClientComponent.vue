@@ -6,8 +6,7 @@
     cpfCnpj: String,
     cep: String,
     endereco: String,
-    codigoOrcamento: String,
-    dataRecebimento: String,
+    dataCadastro: String,
   })
 </script>
 
@@ -55,13 +54,8 @@
         <!-- Coluna direita -->
         <v-col cols="12" md="6" class="d-flex flex-column ga-3">
           <div class="d-flex flex-column ga-3 text-md-right">
-            <span class="text-subtitle-1 font-weight-bold">Código do orçamento</span>
-            <span class="text-body-1">{{ codigoOrcamento }}</span>
-          </div>
-
-          <div class="d-flex flex-column ga-3 text-md-right">
-            <span class="text-subtitle-1 font-weight-bold">Data de recebimento</span>
-            <span class="text-body-1">{{ dataRecebimento }}</span>
+            <span class="text-subtitle-1 font-weight-bold">Data de cadastro</span>
+            <span class="text-body-1">{{ dataCadastro }}</span>
           </div>
         </v-col>
       </v-row>

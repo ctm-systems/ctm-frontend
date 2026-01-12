@@ -7,6 +7,7 @@ const props = defineProps<{
   tipoAmostra?: string
   processos?: string
   foto?: string | null
+  dataRecebimento?: string
 }>()
 
 // Computed para ter uma imagem placeholder quando não houver foto
@@ -16,6 +17,11 @@ const imagemAmostra = computed(() => {
   }
   return props.foto || 'https://via.placeholder.com/150?text=Sem+Foto'
 })
+
+function formatarDataBR(dataIso: string | undefined) {
+  if (!dataIso) return 'N/A'
+  return new Date(dataIso).toLocaleDateString('pt-BR')
+}
 </script>
 
 <template>
@@ -50,6 +56,14 @@ const imagemAmostra = computed(() => {
               <div class="d-flex flex-column ga-2">
                 <span class="text-subtitle-1 font-weight-bold">Tipo de amostra</span>
                 <span class="text-subtitle-1">{{ tipoAmostra }}</span>
+              </div>
+            </v-col>
+
+            <!-- Data de Recebimento -->
+            <v-col cols="12" md="6">
+              <div class="d-flex flex-column ga-2">
+                <span class="text-subtitle-1 font-weight-bold">Data de Recebimento</span>
+                <span class="text-subtitle-1">{{ formatarDataBR(dataRecebimento) }}</span>
               </div>
             </v-col>
 
