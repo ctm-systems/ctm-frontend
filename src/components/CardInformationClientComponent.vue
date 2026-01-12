@@ -3,7 +3,8 @@
     nome: String,
     email: String,
     telefone: String,
-    cpfCnpj: String,
+    cpf: String,
+    cnpj: String,
     cep: String,
     endereco: String,
     dataCadastro: String,
@@ -33,8 +34,13 @@
           </div>
 
           <div class="d-flex flex-column ga-3">
-            <span class="text-subtitle-1 font-weight-bold">CPF/CNPJ</span>
-            <span class="text-body-1">{{ cpfCnpj }}</span>
+            <span class="text-subtitle-1 font-weight-bold">CPF</span>
+            <span class="text-body-1">{{ cpf }}</span>
+          </div>
+
+          <div class="d-flex flex-column ga-3">
+            <span class="text-subtitle-1 font-weight-bold">CNPJ</span>
+            <span class="text-body-1">{{ cnpj }}</span>
           </div>
         </v-col>
 

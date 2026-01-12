@@ -46,7 +46,8 @@ const clientInfo = computed(() => {
       dataCadastro: '',
       endereco: '',
       cep: '',
-      cpfCnpj: '',
+      cpf: '',
+      cnpj: '',
       email: '',
       telefone: '',
     }
@@ -57,7 +58,8 @@ const clientInfo = computed(() => {
     dataCadastro: new Date(client.value.createdAt).toLocaleDateString('pt-BR'),
     endereco: client.value.endereco,
     cep: client.value.cep,
-    cpfCnpj: client.value.cpf || client.value.cnpj || '',
+    cpf: client.value.cpf,
+    cnpj: client.value.cnpj,
     email: client.value.email,
     telefone: client.value.telefone,
   }
@@ -152,7 +154,8 @@ const handleGerarOrcamentoPDF = async (orcamento: Orcamento) => {
           :nome="clientInfo.nome"
           :email="clientInfo.email"
           :telefone="clientInfo.telefone"
-          :cpfCnpj="clientInfo.cpfCnpj"
+          :cpf="clientInfo.cpf"
+          :cnpj="clientInfo.cnpj"
           :cep="clientInfo.cep"
           :endereco="clientInfo.endereco"
           :dataCadastro="clientInfo.dataCadastro"

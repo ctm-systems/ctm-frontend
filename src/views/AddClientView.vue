@@ -26,16 +26,25 @@
               />
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
               <TextInputComponent
                 v-model="form.cpf"
-                placeholder-props="CPF/CNPJ"
+                placeholder-props="CPF"
                 prepend-icon-props="mdi-card-account-details"
                 density="compact"
               />
             </v-col>
 
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="4">
+              <TextInputComponent
+                v-model="form.cnpj"
+                placeholder-props="CNPJ"
+                prepend-icon-props="mdi-card-account-details"
+                density="compact"
+              />
+            </v-col>
+
+            <v-col cols="12" md="4">
               <TextInputComponent
                 v-model="form.telefone"
                 placeholder-props="Telefone"
@@ -103,6 +112,7 @@ const form = ref({
   email: '',
   telefone: '',
   cpf: '',
+  cnpj: '',
   cep: '',
   endereco: '',
 })
