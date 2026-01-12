@@ -108,7 +108,20 @@ const handleGerarOrcamentoPDF = async (orcamento: Orcamento) => {
     return
   }
 
-  await gerarOrcamentoPDF(orcamento, client.value, tecnicoResponsavel.value)
+  // Primeiro tenta buscar o orçamento completo com amostras do backend
+  try {
+    const orcamentoCompleto = await orcamentoStore.fetchOrcamentoById(orcamento.id)
+    if (orcamentoCompleto && orcamentoCompleto.amostras?.length > 0) {
+      await gerarOrcamentoPDF(orcamentoCompleto, client.value, tecnicoResponsavel.value)
+    } else {
+      // Se não tiver amostras no orçamento, usar as amostras do cliente como fallback
+      await gerarOrcamentoPDF(orcamento, client.value, tecnicoResponsavel.value, amostras.value)
+    }
+  } catch (error) {
+    console.error('Erro ao buscar orçamento completo, usando dados locais:', error)
+    // Fallback: usar as amostras do cliente
+    await gerarOrcamentoPDF(orcamento, client.value, tecnicoResponsavel.value, amostras.value)
+  }
 }
 </script>
 
