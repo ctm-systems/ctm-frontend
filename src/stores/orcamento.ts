@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import type { Orcamento } from "@/types/Orçamento"
-import { getOrcamentos, createOrcamento, attachAmostra, updateOrcamentoStatus } from "@/services/orcamento.service"
+import { getOrcamentos, getOrcamentoById, createOrcamento, attachAmostra, updateOrcamentoStatus } from "@/services/orcamento.service"
 
 export const useOrcamentoStore = defineStore("orcamento", {
   state: () => ({
@@ -12,6 +12,14 @@ export const useOrcamentoStore = defineStore("orcamento", {
         this.orcamentos = await getOrcamentos()
       } catch (error) {
         console.error("Failed to fetch orçamentos:", error)
+      }
+    },
+    async fetchOrcamentoById(id: number) {
+      try {
+        return await getOrcamentoById(id)
+      } catch (error) {
+        console.error("Failed to fetch orçamento by id:", error)
+        return null
       }
     },
     async addOrcamento(payload: Partial<Orcamento>) {

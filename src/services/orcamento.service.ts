@@ -6,6 +6,11 @@ export async function getOrcamentos(): Promise<Orcamento[]> {
   return data
 }
 
+export async function getOrcamentoById(id: number): Promise<Orcamento> {
+  const { data } = await api.get<Orcamento>(`/orcamentos/${id}`)
+  return data
+}
+
 export async function createOrcamento(payload: Partial<Orcamento>) {
   const { data } = await api.post<Orcamento>("/orcamentos", payload)
   return data
