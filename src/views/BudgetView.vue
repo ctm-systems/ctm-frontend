@@ -95,7 +95,7 @@ async function saveBudget() {
             placeholder-props="Identificação do orçamento"
             density="compact"
             v-model="form.identificacao"
-            readonly
+            disabled
           />
 
           <v-select
