@@ -19,6 +19,7 @@ const form = ref({
 onMounted(() => {
   clientsStore.fetchClients()
   amostrasStore.fetchAmostras()
+  orcamentoStore.fetchOrcamentos()
 })
 
 const amostrasDoCliente = computed(() => {
@@ -29,11 +30,35 @@ const amostrasDoCliente = computed(() => {
   )
 })
 
+const clienteSelecionado = computed(() => {
+  if (!form.value.clienteId) return null
+  return clientsStore.clients.find(client => client.id === form.value.clienteId)
+})
+
+const proximoNumero = computed(() => {
+  return String(orcamentoStore.orcamentos.length + 1).padStart(4, '0')
+})
+
+const anoAtual = new Date().getFullYear()
+
+const identificacaoAutomatica = computed(() => {
+  if (!clienteSelecionado.value) return ''
+  return `${proximoNumero.value}/${anoAtual} - ${clienteSelecionado.value.nome}`
+})
+
 watch(
   () => form.value.clienteId,
   () => {
     amostrasSelecionadas.value = []
   }
+)
+
+watch(
+  () => identificacaoAutomatica.value,
+  (newValue) => {
+    form.value.identificacao = newValue
+  },
+  { immediate: true }
 )
 
 async function adicionarAmostra(budgetId: number) {
@@ -70,7 +95,7 @@ async function saveBudget() {
             placeholder-props="Identificação do orçamento"
             density="compact"
             v-model="form.identificacao"
-            :disabled="!form.clienteId"
+            readonly
           />
 
           <v-select
