@@ -2,18 +2,22 @@
 import { ref, onMounted, computed } from 'vue'
 import { useClientStore } from '@/stores/clients'
 import { useAmostraStore } from '@/stores/amostra'
+import { usePlanilhaStore } from '@/stores/planilha'
 import { useRoute } from 'vue-router'
 import type { Amostra } from '@/types/Amostra'
 import type { Client } from '@/types/Client'
+import type { Planilha } from '@/types/Planilha'
 
 import CardInformationAmostraComponent from '@/components/CardInformationAmostraComponent.vue'
 
 const route = useRoute()
 const clientStore = useClientStore()
 const amostraStore = useAmostraStore()
+const planilhaStore = usePlanilhaStore()
 
 const client = ref<Client | null>(null)
 const amostra = ref<Amostra | null>(null)
+const planilhasAmostra = ref<Planilha[]>([])
 const loading = ref(true)
 
 // Computed para formatar os processos como string
@@ -29,6 +33,41 @@ const tipoAmostraNome = computed(() => {
   return amostra.value?.tipoAmostra?.nome || 'N/A'
 })
 
+// Método para buscar planilhas da amostra
+const fetchPlanilhasAmostra = async (amostraId: number) => {
+  try {
+    await planilhaStore.fetchPlanilhas()
+    planilhasAmostra.value = planilhaStore.planilhas.filter(planilha => planilha.amostraId === amostraId)
+  } catch (error) {
+    console.error('Erro ao buscar planilhas da amostra:', error)
+    planilhasAmostra.value = []
+  }
+}
+
+// Método para fazer download da planilha
+const downloadPlanilha = async (planilha: Planilha) => {
+  try {
+    console.log('Iniciando download da planilha:', {
+      id: planilha.id,
+      identificacao: planilha.identificacao,
+      amostraId: planilha.amostraId
+    })
+
+    const filename = `${planilha.identificacao}.xlsx`
+    await planilhaStore.downloadPlanilha(planilha.id, filename)
+    console.log('Download realizado com sucesso')
+  } catch (error) {
+    console.error('Erro ao fazer download da planilha:', error)
+
+    // Tratamento específico para erro 404
+    if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+      alert('Arquivo não encontrado. Verifique se a planilha ainda existe.')
+    } else {
+      alert('Erro ao baixar arquivo. Tente novamente.')
+    }
+  }
+}
+
 onMounted(async () => {
   const clientId = Number(route.params.id)
   const amostraId = Number(route.params.amostraId)
@@ -38,16 +77,14 @@ onMounted(async () => {
       client.value = fetchedClient
       await amostraStore.fetchAmostras()
       amostra.value = amostraStore.amostras.find((a) => a.id === amostraId) || null
+
+      if (amostra.value) {
+        await fetchPlanilhasAmostra(amostraId)
+      }
     }
   }
   loading.value = false
 })
-
-const arquivos = ref([
-  { id: 1, nome: 'Arquivo 1', tipo: 'xlsx' },
-  { id: 2, nome: 'Arquivo 2', tipo: 'pdf' },
-  { id: 3, nome: 'Arquivo 3', tipo: 'xlsx' },
-])
 </script>
 
 <template>
@@ -68,21 +105,32 @@ const arquivos = ref([
           <v-col cols="12">
             <h2 class="text-h6 font-weight-bold">Planilhas</h2>
           </v-col>
-          <v-col v-for="arquivo in arquivos" :key="arquivo.id" cols="12" md="3">
+          <v-col v-if="planilhasAmostra.length === 0" cols="12">
+            <v-alert type="info" variant="outlined">
+              Nenhuma planilha encontrada para esta amostra
+            </v-alert>
+          </v-col>
+          <v-col v-for="planilha in planilhasAmostra" :key="planilha.id" cols="12" md="3">
             <v-card class="rounded-lg" elevation="2">
               <v-card-text class="d-flex flex-column align-center justify-center h-100">
                 <v-icon
                   size="80"
-                  :color="arquivo.tipo === 'pdf' ? 'red-darken-2' : 'green-darken-2'"
+                  color="green-darken-2"
                   class="mb-2"
                 >
-                  {{ arquivo.tipo === 'pdf' ? 'mdi-file-pdf-box' : 'mdi-file-excel-box' }}
+                  mdi-file-excel-box
                 </v-icon>
-                <span class="text-subtitle-1 font-weight-bold text-center">{{ arquivo.nome }}</span>
+                <span class="text-subtitle-1 font-weight-bold text-center">{{ planilha.identificacao }}</span>
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="text-subtitle-1 text-orange w-100" variant="text"> Baixar </v-btn>
+                <v-btn
+                  class="text-subtitle-1 text-orange w-100"
+                  variant="text"
+                  @click="downloadPlanilha(planilha)"
+                >
+                  Baixar
+                </v-btn>
               </v-card-actions>
             </v-card>
           </v-col>

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 import type { Planilha } from "@/types/Planilha"
-import { getPlanilhas, createPlanilha } from "@/services/planilha.service"
+import { getPlanilhas, createPlanilha, downloadPlanilha } from "@/services/planilha.service"
 
 export const usePlanilhaStore = defineStore("planilha", {
   state: () => ({
@@ -22,6 +22,28 @@ export const usePlanilhaStore = defineStore("planilha", {
       } catch (error) {
         console.error("Failed to create planilha:", error)
         return undefined
+      }
+    },
+    async downloadPlanilha(id: number, filename: string = 'planilha.xlsx'): Promise<void> {
+      try {
+        console.log(`Fazendo requisição para download da planilha ID: ${id}`)
+        const blob = await downloadPlanilha(id)
+        console.log('Blob recebido:', { size: blob.size, type: blob.type })
+
+        const url = window.URL.createObjectURL(blob)
+
+        const link = document.createElement('a')
+        link.href = url
+        link.download = filename
+        document.body.appendChild(link)
+
+        link.click()
+
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error("Failed to download planilha:", error)
+        throw error
       }
     },
   },

@@ -14,3 +14,12 @@ export async function createPlanilha(payload: Partial<Planilha> | FormData) {
   const { data } = await api.post<Planilha>("/planilhas", payload, config)
   return data
 }
+
+export async function downloadPlanilha(id: number): Promise<Blob> {
+  const url = `/planilhas/${id}/download`
+
+  const { data } = await api.get(url, {
+    responseType: 'blob'
+  })
+  return data
+}
