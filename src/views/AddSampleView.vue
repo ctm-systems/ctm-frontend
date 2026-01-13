@@ -33,7 +33,10 @@ async function salvarProcessos(amostraId: number) {
   await amostrasStore.attachProcessosToAmostra(amostraId, processosSelecionados.value)
 }
 
+const loading = ref(false)
+
 async function saveSample() {
+  loading.value = true
   try {
     // Criar FormData para envio de arquivo
     const formData = new FormData()
@@ -55,6 +58,8 @@ async function saveSample() {
     }
   } catch (error) {
     console.error('Erro ao salvar a amostra:', error)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -130,7 +135,7 @@ async function saveSample() {
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
             <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
-            <v-btn color="#00A400" type="submit">Adicionar</v-btn>
+            <v-btn color="#00A400" type="submit" :loading="loading">Adicionar</v-btn>
           </div>
         </v-form>
       </v-col>

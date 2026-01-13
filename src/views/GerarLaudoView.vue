@@ -56,7 +56,10 @@ async function adicionarPlanilha(laudoId: number) {
   )
 }
 
+const loading = ref(false)
+
 const saveLaudo = async () => {
+  loading.value = true
   try {
     const laudo = await laudoStore.addLaudo(form.value)
     if (laudo) {
@@ -64,6 +67,8 @@ const saveLaudo = async () => {
     }
   } catch (error) {
     console.error('Erro ao salvar o laudo:', error)
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -113,7 +118,7 @@ const saveLaudo = async () => {
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
             <v-btn color="#FF1A1A" type="reset">Limpar campos</v-btn>
-            <v-btn color="#00A400" type="submit">Gerar laudo</v-btn>
+            <v-btn color="#00A400" type="submit" :loading="loading">Gerar laudo</v-btn>
           </div>
         </v-form>
       </v-col>
