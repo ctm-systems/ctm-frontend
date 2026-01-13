@@ -37,19 +37,10 @@ const deleteClient = (clientId: number) => {
           v-model="search"
           prepend-inner-icon="mdi-magnify"
           placeholder="Buscar cliente"
-          variant="underlined"
+          variant="outlined"
           hide-details
           dense
           min-width="300"
-        />
-      </v-col>
-      <v-col cols="auto">
-        <!-- Botão de filtro -->
-        <v-btn
-          icon="mdi-filter-variant"
-          variant="text"
-          elevation="1"
-          size="small"
         />
       </v-col>
     </v-row>

@@ -24,8 +24,6 @@ const router = createRouter({
       component: () => import('../layouts/MainLayout.vue'),
       meta: { requiresAuth: true },
       children: [
-        // Adicionar a rota para a dashboard
-
         {
           path: '/app/clientes',
           name: 'clientes',

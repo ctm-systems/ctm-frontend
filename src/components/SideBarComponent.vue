@@ -18,7 +18,6 @@ async function logout() {
 }
 
 const menu = ref([
-  { title: 'Dashboard', icon: 'mdi-home', value: 'dashboard', route: '/app' },
   { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes', route: '/app/clientes' },
   { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente', route: '/app/clientes/cadastrar' },
   { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra', route: '/app/amostras/cadastrar' },

@@ -20,7 +20,6 @@ const amostra = ref<Amostra | null>(null)
 const planilhasAmostra = ref<Planilha[]>([])
 const loading = ref(true)
 
-// Computed para formatar os processos como string
 const processosFormatados = computed(() => {
   if (!amostra.value?.processos || amostra.value.processos.length === 0) {
     return 'Nenhum processo vinculado'
@@ -28,12 +27,10 @@ const processosFormatados = computed(() => {
   return amostra.value.processos.map((p) => p.nome).join(', ')
 })
 
-// Computed para pegar o nome do tipo de amostra
 const tipoAmostraNome = computed(() => {
   return amostra.value?.tipoAmostra?.nome || 'N/A'
 })
 
-// Método para buscar planilhas da amostra
 const fetchPlanilhasAmostra = async (amostraId: number) => {
   try {
     await planilhaStore.fetchPlanilhas()
@@ -44,7 +41,6 @@ const fetchPlanilhasAmostra = async (amostraId: number) => {
   }
 }
 
-// Método para fazer download da planilha
 const downloadPlanilha = async (planilha: Planilha) => {
   try {
     console.log('Iniciando download da planilha:', {
@@ -59,7 +55,6 @@ const downloadPlanilha = async (planilha: Planilha) => {
   } catch (error) {
     console.error('Erro ao fazer download da planilha:', error)
 
-    // Tratamento específico para erro 404
     if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
       alert('Arquivo não encontrado. Verifique se a planilha ainda existe.')
     } else {

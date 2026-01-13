@@ -76,7 +76,7 @@ const showPassword = ref(false)
 async function handleLogin() {
   try {
     await authStore.login(username.value, password.value)
-    router.push('/app')
+    router.push('/app/clientes')
   } catch {}
 }
 </script>

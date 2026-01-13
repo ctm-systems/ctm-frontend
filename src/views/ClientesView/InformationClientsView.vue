@@ -256,7 +256,6 @@ const handleGerarOrcamentoPDF = async (orcamento: Orcamento) => {
                         variant="text"
                         @click="handleGerarOrcamentoPDF(orcamento)"
                       />
-                      <v-btn icon="mdi-chevron-right" density="compact" variant="text" />
                     </v-col>
                   </v-row>
                   <v-select
