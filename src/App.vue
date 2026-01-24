@@ -1,10 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>Projeto Base</h1>
-  <v-btn>
-    Testanto Vuetify
-  </v-btn>
+  <v-responsive>
+    <router-view />
+  </v-responsive>
 </template>
 
 <style scoped></style>
