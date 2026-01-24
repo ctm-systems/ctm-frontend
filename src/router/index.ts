@@ -61,11 +61,6 @@ const router = createRouter({
           name: 'tratar-excel',
           component: () => import('../views/ExcelView.vue'),
         },
-        {
-          path: '/app/laudos/gerar',
-          name: 'gerar-laudo',
-          component: () => import('../views/GerarLaudoView.vue'),
-        },
       ],
     },
   ],
