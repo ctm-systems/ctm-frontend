@@ -23,7 +23,6 @@ const menu = ref([
   { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra', route: '/app/amostras/cadastrar' },
   { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento', route: '/app/orcamentos/gerar' },
   { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel', route: '/app/excel/tratar' },
-  { title: 'Gerar laudo', icon: 'mdi-file-document-edit', value: 'gerar-laudo', route: '/app/laudos/gerar' },
 ])
 </script>
 
