@@ -12,16 +12,26 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    async login(username: string, password: string) {
+    async login() {
       this.loading = true
-      this.error = ''
-
       try {
-        await api.post('/login', { username, password })
-
-        this.isAuthenticated = true
+        const { data } = await api.get<{ url: string }>('/auth/url')
+        window.location.href = data.url
       } catch (err) {
-        this.error = 'Credenciais inválidas'
+        this.error = 'Não foi possível conectar ao servidor de autenticação.'
+        this.loading = false
+      }
+    },
+
+    async handleCallback(code: string) {
+      this.loading = true
+      try {
+        console.log('Chamando backend:', api.defaults.baseURL + '/auth/callback')
+        await api.post('/auth/callback', { code })
+        await this.fetchUser()
+      } catch (err) {
+        this.error = 'Falha ao validar acesso com o SUAP.'
+        this.isAuthenticated = false
         throw err
       } finally {
         this.loading = false
@@ -29,23 +39,25 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async fetchUser() {
-      this.loading = true
       try {
-        this.user = await getSuapUser()
+        const userData = await getSuapUser()
+        this.user = userData
         this.isAuthenticated = true
-      } catch {
+      } catch (err) {
         this.user = null
         this.isAuthenticated = false
-        throw new Error('Não autenticado')
-      } finally {
-        this.loading = false
+        throw err
       }
     },
 
     async logout() {
-      await api.get('/logout')
-      this.isAuthenticated = false
-      this.user = null
+      try {
+        await api.get('/logout')
+      } finally {
+        this.user = null
+        this.isAuthenticated = false
+        window.location.href = '/'
+      }
     },
   },
 })

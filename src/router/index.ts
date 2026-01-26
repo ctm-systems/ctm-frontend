@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { api } from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,11 @@ const router = createRouter({
           component: () => import('../views/LoginView.vue'),
         },
       ],
+    },
+    {
+      path: '/callback',
+      name: 'callback',
+      component: () => import('../views/CallbackView.vue'),
     },
     {
       path: '/app',
@@ -67,14 +73,24 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+
+  // Se a rota não exige autenticação (como login ou callback), deixa passar
   if (!to.meta.requiresAuth) {
     return next()
   }
 
+  // Se já temos o usuário na Store, não precisamos bater no servidor de novo
+  if (authStore.isAuthenticated && authStore.user) {
+    return next()
+  }
+
+  // Tenta validar a sessão (fetchUser chamará o /data internamente)
   try {
-    await api.get('/data')
+    await authStore.fetchUser()
     return next()
   } catch (error) {
+    // Se falhar (cookie expirado ou inexistente), vai para o login
     return next('/login')
   }
 })
