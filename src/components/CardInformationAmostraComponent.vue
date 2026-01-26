@@ -34,7 +34,7 @@ function formatarDataBR(dataIso: string | undefined) {
           <v-img
             :src="imagemAmostra"
             class="rounded-lg"
-            height="100"
+            height="230"
             crossorigin="anonymous"
             cover
           />
