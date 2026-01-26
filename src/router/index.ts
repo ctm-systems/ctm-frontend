@@ -68,9 +68,14 @@ const router = createRouter({
           component: () => import('../views/ExcelView.vue'),
         },
         {
-          path: '/app/usuarios/gerencia',
+          path: '/app/admin/usuarios',
           name: 'gerencia-usuarios',
           component: () => import('../views/ManageUsersView.vue'),
+        },
+        {
+          path: '/app/admin/processos',
+          name: 'gerencia-processos',
+          component: () => import('../views/ManageProcessView.vue'),
         }
       ],
     },
