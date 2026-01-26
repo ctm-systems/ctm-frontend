@@ -1,92 +1,65 @@
 <template>
   <v-row class="ma-0">
-
-    <v-col cols="12" md="6" class="left-area">
-      <!-- Área esquerda - Adicionar imagem -->
+    <v-col cols="12" md="6" class="d-flex pa-0 ma-0">
+      <v-img src="/imagem.jpg" alt="Imagem" cover/>
     </v-col>
 
-    <!-- COLUNA DIREITA - FORMULÁRIO -->
     <v-col cols="12" md="6" class="form-area px-8">
-
       <div class="container-logo w-100">
-        <img
-          class="logo-img my-4"
-          src="@/assets/logo.png"
-          alt="Logo"
-        />
+        <img class="logo-img my-4" src="@/assets/logo.png" alt="Logo" />
       </div>
 
-      <div class="welcome-text">
+      <div class="welcome-text mb-8">
         <h2>Olá, seja bem-vindo(a)!</h2>
         <h1>
           <span class="ct">CT</span>
           <span class="mineral">Mineral</span>
         </h1>
+        <p class="text-subtitle-1 text-grey-darken-1 mt-2">
+          Utilize sua conta institucional para acessar o sistema.
+        </p>
       </div>
 
-      <v-form @submit.prevent="handleLogin">
+      <v-btn
+        block
+        class="btn-login"
+        size="x-large"
+        :loading="authStore.loading"
+        prepend-icon="mdi-login"
+        @click="handleLogin"
+        max-height="60"
+      >
+        Entrar com SUAP
+      </v-btn>
 
-        <TextInputComponent
-          v-model="username"
-          :placeholder-props="'Informe sua matrícula'"
-          :prepend-icon-props="'mdi-account'"
-        />
+      <v-alert v-if="authStore.error" type="error" class="mt-4" variant="tonal">
+        {{ authStore.error }}
+      </v-alert>
 
-        <TextInputComponent
-          v-model="password"
-          :placeholder-props="'Informe sua senha'"
-          :type-props="showPassword ? 'text' : 'password'"
-          :prepend-icon-props="'mdi-lock'"
-          :append-icon-props="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
-          @click:append-inner="showPassword = !showPassword"
-        />
+      <v-divider class="my-8"></v-divider>
 
-        <!-- BOTÃO ENTRAR -->
-        <v-btn
-          type="submit"
-          block
-          class="btn-login"
-          size="x-large"
-          :loading="authStore.loading"
-        >
-          Acessar
-        </v-btn>
-
-        <v-alert v-if="authStore.error" type="error" class="mt-4">{{ authStore.error }}</v-alert>
-      </v-form>
-
+      <p class="text-caption text-center text-grey">
+        Ao clicar em entrar, você será redirecionado para a autenticação oficial do IFRN.
+      </p>
     </v-col>
-
   </v-row>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import TextInputComponent from '@/components/TextInputComponent.vue'
 
-const router = useRouter()
 const authStore = useAuthStore()
-
-const username = ref('')
-const password = ref('')
-const showPassword = ref(false)
 
 async function handleLogin() {
   try {
-    await authStore.login(username.value, password.value)
-    router.push('/app/clientes')
-  } catch {}
+    await authStore.login()
+  } catch (error) {
+    console.error('Erro ao iniciar login:', error)
+  }
 }
 </script>
 
 <style scoped>
-
-.left-area {
-  background-color: grey;
-}
-
 .logo-img {
   width: 50px;
 }
@@ -116,11 +89,10 @@ async function handleLogin() {
 }
 
 .btn-login {
-  margin-top: 25px;
   font-size: 20px;
   font-weight: 700;
   color: white;
-  border-radius: 40px;
+  border-radius: 8px;
   background: linear-gradient(90deg, #007965, #004d3d);
 }
 
