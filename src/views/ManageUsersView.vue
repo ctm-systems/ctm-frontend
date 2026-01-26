@@ -1,214 +1,207 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useTecnicoStore } from '@/stores/tecnico'
+import type { Tecnico } from '@/types/Tecnico'
 import TextInputComponent from '@/components/TextInputComponent.vue'
-import type { User } from '@/types/User'
 
-const users = ref<User[]>([
-  { id: 1, matricula: '202910880010', nome: 'João Silva' },
-  { id: 2, matricula: '202910880011', nome: 'Maria Santos' },
-  { id: 3, matricula: '202910880012', nome: 'Pedro Oliveira' },
-])
+const tecnicoStore = useTecnicoStore()
 
 const search = ref('')
-const page = ref(1)
-const itemsPerPage = 10
-
 const dialogAdd = ref(false)
-const userForm = ref({
-  matricula: '',
-  nome: '',
-})
-
 const dialogEdit = ref(false)
-const currentUser = ref<User | null>(null)
+const page = ref(1)
+const itemsPerPage = 5
+const userForm = ref<Partial<Tecnico>>({
+  nome: '',
+  matricula: ''
+})
+const editingTecnico = ref<Tecnico | null>(null)
 
 const filteredUsers = computed(() => {
-  let filtered = users.value
+  let filtered = tecnicoStore.tecnicos
+
   if (search.value) {
-    filtered = filtered.filter(
-      (u) =>
-        u.nome.toLowerCase().includes(search.value.toLowerCase()) ||
-        u.matricula.includes(search.value),
+    filtered = filtered.filter(tecnico =>
+      tecnico.nome.toLowerCase().includes(search.value.toLowerCase()) ||
+      tecnico.matricula.toLowerCase().includes(search.value.toLowerCase())
     )
   }
+
   const start = (page.value - 1) * itemsPerPage
-  return filtered.slice(start, start + itemsPerPage)
+  const end = start + itemsPerPage
+  return filtered.slice(start, end)
 })
 
 const totalPages = computed(() => {
-  let filtered = users.value
+  let filtered = tecnicoStore.tecnicos
+
   if (search.value) {
-    filtered = filtered.filter(
-      (u) =>
-        u.nome.toLowerCase().includes(search.value.toLowerCase()) ||
-        u.matricula.includes(search.value),
+    filtered = filtered.filter(tecnico =>
+      tecnico.nome.toLowerCase().includes(search.value.toLowerCase()) ||
+      tecnico.matricula.toLowerCase().includes(search.value.toLowerCase())
     )
   }
-  return Math.max(1, Math.ceil(filtered.length / itemsPerPage))
+
+  return Math.ceil(filtered.length / itemsPerPage)
 })
 
-async function prevPage() {
-  if (page.value > 1) page.value--
-}
-
-async function nextPage() {
-  if (page.value < totalPages.value) page.value++
-}
-
-async function addUser() {
-  userForm.value = { matricula: '', nome: '' }
+const addUser = () => {
+  userForm.value = {
+    nome: '',
+    matricula: ''
+  }
+  editingTecnico.value = null
   dialogAdd.value = true
 }
 
-function saveNewUser() {
-  const newUser: User = {
-    id: Math.max(...users.value.map((u) => u.id), 0) + 1,
-    matricula: userForm.value.matricula,
-    nome: userForm.value.nome,
-  }
-  users.value.push(newUser)
-  dialogAdd.value = false
-}
-
-function editUser(user: User) {
-  currentUser.value = user
+const editUser = (tecnico: Tecnico) => {
   userForm.value = {
-    matricula: user.matricula,
-    nome: user.nome,
+    nome: tecnico.nome,
+    matricula: tecnico.matricula
   }
+  editingTecnico.value = tecnico
   dialogEdit.value = true
 }
 
-async function saveEditedUser() {
-  if (currentUser.value) {
-    const index = users.value.findIndex((u) => u.id === currentUser.value!.id)
-    if (index !== -1) {
-      users.value[index] = {
-        ...currentUser.value,
-        matricula: userForm.value.matricula,
-        nome: userForm.value.nome,
-      }
-    }
+const deleteUser = async (tecnico: Tecnico) => {
+  if (confirm(`Tem certeza que deseja excluir o técnico ${tecnico.nome}?`)) {
+    await tecnicoStore.deleteTecnicoById(tecnico.id)
   }
-  dialogEdit.value = false
 }
 
-async function deleteUser(user: User) {
-  const index = users.value.findIndex((u) => u.id === user.id)
-  if (index !== -1) {
-    users.value.splice(index, 1)
+const saveNewUser = async () => {
+  if (userForm.value.nome && userForm.value.matricula) {
+    await tecnicoStore.addTecnico(userForm.value)
+    dialogAdd.value = false
+    userForm.value = {
+      nome: '',
+      matricula: ''
+    }
   }
 }
+
+const saveEditedUser = async () => {
+  if (userForm.value.nome && userForm.value.matricula && editingTecnico.value) {
+    await tecnicoStore.updateTecnico(editingTecnico.value.id, userForm.value)
+    dialogEdit.value = false
+    userForm.value = {
+      nome: '',
+      matricula: ''
+    }
+    editingTecnico.value = null
+  }
+}
+
+const prevPage = () => {
+  if (page.value > 1) {
+    page.value--
+  }
+}
+
+const nextPage = () => {
+  if (page.value < totalPages.value) {
+    page.value++
+  }
+}
+
+onMounted(() => {
+  tecnicoStore.fetchTecnicos()
+})
+
+watch(search, () => {
+  page.value = 1
+})
 </script>
 
 <template>
-  <v-container fluid class="pa-8" style="background: #fff; min-height: 100vh">
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <h1
-          class="font-weight-bold mb-6"
-          style="font-size: 2.2rem; font-family: Poppins, sans-serif"
-        >
-          Usuários
-        </h1>
+        <span class="text-h6 font-weight-bold">Gerenciamento de usuários</span>
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12">
         <v-card
-          class="pa-6"
+          class="pa-6 rounded-lg"
           elevation="2"
-          style="border-radius: 15px; box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
         >
-          <v-row align="center" class="mb-4">
+          <v-row>
             <v-col cols="12" md="4">
               <text-input-component
                 v-model="search"
                 prepend-inner-icon="mdi-magnify"
-                label="Pesquisar..."
+                label="Pesquisar"
                 variant="outlined"
                 density="compact"
               />
             </v-col>
-            <v-col cols="12" md="8" class="d-flex justify-end mb-7">
-              <v-btn color="#00A400" @click="addUser"> Adicionar </v-btn>
+            <v-col cols="12" md="8" class="d-flex justify-end">
+              <v-btn color="#00A400" @click="addUser">Adicionar Técnico</v-btn>
             </v-col>
           </v-row>
-          <v-divider class="mb-4" />
-          <v-table>
-            <thead>
-              <tr>
-                <th style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 18px">
-                  Matrícula
-                </th>
-                <th style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 18px">
-                  Nome
-                </th>
-                <th class="text-center" style="width: 120px"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="user in filteredUsers" :key="user.id">
-                <td
-                  style="
-                    font-family: Poppins, sans-serif;
-                    font-weight: 700;
-                    font-size: 15px;
-                    color: #505050;
-                  "
-                >
-                  {{ user.matricula }}
-                </td>
-                <td
-                  style="
-                    font-family: Poppins, sans-serif;
-                    font-weight: 700;
-                    font-size: 15px;
-                    color: #505050;
-                  "
-                >
-                  {{ user.nome }}
-                </td>
-                <td class="text-center">
-                  <div class="d-flex justify-center ga-2">
-                    <v-btn icon variant="text" color="primary" @click="editUser(user)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn icon variant="text" color="error" @click="deleteUser(user)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </v-table>
-          <v-row class="mt-4" align="center" justify="center">
-            <v-col cols="auto">
+          <v-divider class="mb-4"/>
+
+          <v-progress-linear v-if="tecnicoStore.isLoading" indeterminate color="primary" class="mb-4" />
+
+          <v-alert v-if="tecnicoStore.error" type="error" class="mb-4">
+            {{ tecnicoStore.error }}
+          </v-alert>
+
+          <v-row>
+            <v-col cols="12">
+              <v-table>
+                <thead>
+                  <tr>
+                    <th class="text-subtitle-1 font-weight-bold">
+                      Matrícula
+                    </th>
+                    <th class="text-subtitle-1 font-weight-bold">
+                      Nome
+                    </th>
+                    <th class="text-center" style="width: 120px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="filteredUsers.length === 0 && !tecnicoStore.isLoading">
+                    <td colspan="3" class="text-center text-subtitle-1">
+                      Nenhum técnico encontrado
+                    </td>
+                  </tr>
+                  <tr v-for="user in filteredUsers" :key="user.id">
+                    <td class="text-subtitle-1">
+                      {{ user.matricula }}
+                    </td>
+                    <td class="text-subtitle-1">
+                      {{ user.nome }}
+                    </td>
+                    <td class="text-center">
+                      <div class="d-flex justify-center ga-2">
+                        <v-btn icon="mdi-pencil" variant="text" color="primary" @click="editUser(user)"/>
+                        <v-btn icon="mdi-delete" variant="text" color="error" @click="deleteUser(user)"/>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-table>
+            </v-col>
+          </v-row>
+
+          <v-row class="mt-4">
+            <v-col cols="12" class="d-flex justify-end align-center">
               <v-btn
-                variant="outlined"
-                color="grey-darken-1"
+                icon="mdi-chevron-left"
+                variant="text"
                 :disabled="page === 1"
                 @click="prevPage"
-              >
-                <v-icon left>mdi-chevron-left</v-icon>
-                Anterior
-              </v-btn>
-            </v-col>
-            <v-col cols="auto" class="d-flex align-center">
-              <span class="text-grey-darken-1 font-weight-bold text-h6">
-                {{ page }} / {{ totalPages }}
-              </span>
-            </v-col>
-            <v-col cols="auto">
+              />
+              <span class="mx-2">Página {{ page }} de {{ totalPages }}</span>
               <v-btn
-                variant="outlined"
-                color="grey-darken-1"
+                icon="mdi-chevron-right"
+                variant="text"
                 :disabled="page === totalPages"
                 @click="nextPage"
-              >
-                Próximo
-                <v-icon right>mdi-chevron-right</v-icon>
-              </v-btn>
+              />
             </v-col>
           </v-row>
         </v-card>
@@ -217,48 +210,58 @@ async function deleteUser(user: User) {
   </v-container>
   <v-dialog v-model="dialogAdd" max-width="500">
     <v-card>
-      <v-card-title class="text-h5 pa-6">Adicionar Usuário</v-card-title>
-      <v-card-text class="px-6">
+      <v-card-title class="text-h6 font-weight-bold pa-4">Adicionar Técnico</v-card-title>
+      <v-card-text class="px-4">
         <v-text-field
           v-model="userForm.matricula"
           label="Matrícula"
           variant="outlined"
           density="compact"
-          class="mb-4"
         />
         <v-text-field v-model="userForm.nome" label="Nome" variant="outlined" density="compact" />
       </v-card-text>
-      <v-card-actions class="pa-6">
+      <v-card-actions class="pa-4">
         <v-spacer />
-        <v-btn variant="outlined" color="red" @click="dialogAdd = false"> Cancelar </v-btn>
-        <v-btn variant="outlined" color="#00A400" @click="saveNewUser"> Confirmar </v-btn>
+        <v-btn variant="outlined" color="red" @click="dialogAdd = false">Cancelar</v-btn>
+        <v-btn
+          variant="outlined"
+          color="#00A400"
+          @click="saveNewUser"
+          :loading="tecnicoStore.isLoading"
+          :disabled="!userForm.nome || !userForm.matricula"
+        >
+          Confirmar
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
   <v-dialog v-model="dialogEdit" max-width="500">
     <v-card>
-      <v-card-title class="text-h5 pa-6">Editar Usuário</v-card-title>
-      <v-card-text class="px-6">
+      <v-card-title class="text-h6 font-weight-bold pa-4">Editar Técnico</v-card-title>
+      <v-card-text class="px-4">
         <v-text-field
           v-model="userForm.matricula"
           label="Matrícula"
           variant="outlined"
           density="compact"
-          class="mb-4"
         />
         <v-text-field v-model="userForm.nome" label="Nome" variant="outlined" density="compact" />
       </v-card-text>
-      <v-card-actions class="pa-6">
+      <v-card-actions class="pa-4">
         <v-spacer />
         <v-btn variant="outlined" color="red" @click="dialogEdit = false"> Cancelar </v-btn>
-        <v-btn variant="outlined" color="primary" @click="saveEditedUser"> Confirmar </v-btn>
+        <v-btn
+          variant="outlined"
+          color="primary"
+          @click="saveEditedUser"
+          :loading="tecnicoStore.isLoading"
+          :disabled="!userForm.nome || !userForm.matricula"
+        >
+          Confirmar
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
-<style scoped>
-.font-weight-bold {
-  font-weight: 700;
-}
-</style>
+<style scoped></style>
