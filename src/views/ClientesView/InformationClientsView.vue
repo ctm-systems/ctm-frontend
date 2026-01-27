@@ -7,10 +7,9 @@ import { useOrcamentoStore } from '@/stores/orcamento'
 import type { Client } from '@/types/Client'
 import type { Amostra } from '@/types/Amostra'
 import { type Orcamento, StatusOrcamento } from '@/types/Orçamento'
-import { API_URL } from '@/config/env'
 import { gerarOrcamentoPDF } from '@/services/pdf.service'
-
 import CardInformationClientComponent from '@/components/CardInformationClientComponent.vue'
+import { SUPABASE_URL } from '@/config/env'
 
 const route = useRoute()
 const clientStore = useClientStore()
@@ -213,7 +212,7 @@ const handleGerarOrcamentoPDF = async (orcamento: Orcamento) => {
             <v-col v-for="amostra in amostras" :key="amostra.id" cols="12" md="3">
               <v-card class="rounded-lg" elevation="2">
                 <v-img
-                  :src="`${API_URL}${amostra.foto}`"
+                  :src="`${SUPABASE_URL}${amostra.foto}`"
                   height="150"
                   crossorigin="anonymous"
                   cover

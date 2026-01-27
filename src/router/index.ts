@@ -67,6 +67,16 @@ const router = createRouter({
           name: 'tratar-excel',
           component: () => import('../views/ExcelView.vue'),
         },
+        {
+          path: '/app/admin/usuarios',
+          name: 'gerencia-usuarios',
+          component: () => import('../views/ManageUsersView.vue'),
+        },
+        {
+          path: '/app/admin/processos',
+          name: 'gerencia-processos',
+          component: () => import('../views/ManageProcessView.vue'),
+        }
       ],
     },
   ],

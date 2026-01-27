@@ -9,6 +9,7 @@ import type { Client } from '@/types/Client'
 import type { Planilha } from '@/types/Planilha'
 
 import CardInformationAmostraComponent from '@/components/CardInformationAmostraComponent.vue'
+import { SUPABASE_URL } from '@/config/env'
 
 const route = useRoute()
 const clientStore = useClientStore()
@@ -91,7 +92,7 @@ onMounted(async () => {
           :dataRecebimento="amostra.dataRecebimento"
           :tipoAmostra="tipoAmostraNome"
           :processos="processosFormatados"
-          :foto="amostra.foto"
+          :foto="`${SUPABASE_URL}${amostra.foto}`"
         />
       </v-col>
 
