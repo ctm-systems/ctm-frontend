@@ -159,7 +159,7 @@ watch(search, () => {
                     <th class="text-subtitle-1 font-weight-bold">
                       Preço
                     </th>
-                    <th class="text-center" style="width: 120px"></th>
+                    <th class="text-subtitle-1 font-weight-bold text-center" style="width: 120px">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
