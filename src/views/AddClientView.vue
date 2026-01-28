@@ -4,6 +4,18 @@
       <v-col cols="12">
         <span class="text-h6 font-weight-bold">Adicionar cliente</span>
       </v-col>
+      <v-col v-if="dialogVisible" cols="12">
+        <CardDialogComponent
+          :msg="dialogMsg"
+          :nome="form.nome"
+          :email="form.email"
+          :telefone="form.telefone"
+          :cpf="form.cpf"
+          :cnpj="form.cnpj"
+          :cep="form.cep"
+          :endereco="form.endereco"
+        />
+      </v-col>
       <v-col cols="12">
         <v-form @submit.prevent="saveClient">
           <v-row dense>
@@ -107,9 +119,13 @@ import { ref, onMounted } from 'vue'
 import { useClientStore } from '@/stores/clients'
 import { useTecnicoStore } from '@/stores/tecnico'
 import TextInputComponent from '@/components/TextInputComponent.vue'
+import CardDialogComponent from '@/components/CardDialogComponent.vue'
 
 const clientsStore = useClientStore()
 const tecnicoStore = useTecnicoStore()
+
+const dialogVisible = ref(false)
+const dialogMsg = ref('')
 
 const form = ref({
   nome: '',
@@ -136,16 +152,33 @@ async function adicionarTecnicos(clientId: number) {
 const loading = ref(false)
 
 async function saveClient() {
+  form.value = {...form.value }
+  
+  if (
+    !form.value.nome ||
+    !form.value.email ||
+    (!form.value.cpf && !form.value.cnpj) ||
+    !form.value.cep ||
+    !form.value.endereco
+  ) {
+    dialogMsg.value = 'Error'
+    dialogVisible.value = true
+    return
+  }
+
   loading.value = true
   try {
     const client = await clientsStore.addClient(form.value)
     if (client) {
       await adicionarTecnicos(client.id)
+      dialogMsg.value = 'Sucesso'
     }
   } catch (error) {
     console.error('Erro ao salvar o cliente:', error)
+    dialogMsg.value = 'Error'
   } finally {
     loading.value = false
+    dialogVisible.value = true
   }
 }
 </script>
