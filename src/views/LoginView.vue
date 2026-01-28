@@ -32,7 +32,7 @@
         Entrar com SUAP
       </v-btn>
 
-      <v-alert v-if="authStore.error" type="error" class="mt-4" variant="tonal">
+      <v-alert v-if="authStore.error" type="error" class="mt-4" max-height="60" variant="tonal">
         {{ authStore.error }}
       </v-alert>
 
