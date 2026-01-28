@@ -19,6 +19,8 @@ const form = ref({
   dataRecebimento: '',
 })
 
+const today = new Date().toISOString().split("T")[0] // yyyy-mm-dd
+
 const processosSelecionados = ref<number[]>([])
 
 onMounted(() => {
@@ -131,6 +133,7 @@ async function saveSample() {
             density="compact"
             v-model="form.dataRecebimento"
             :disabled="!form.clienteId"
+            :max="today"
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
