@@ -6,15 +6,18 @@
       </v-col>
       <v-col v-if="dialogVisible" cols="12">
         <CardDialogComponent
-          :msg="dialogMsg"
-          :nome="form.nome"
-          :email="form.email"
-          :telefone="form.telefone"
-          :cpf="form.cpf"
-          :cnpj="form.cnpj"
-          :cep="form.cep"
-          :endereco="form.endereco"
-        />
+          :type="dialogMsg === 'Error' ? 'error' : 'success'"
+          :title="dialogMsg === 'Error' ? 'Erro ao cadastrar' : 'Sucesso!'"
+        >
+          <div v-if="dialogMsg === 'Error'" class="d-flex flex-column ga-2">
+            <p>Verifique os campos obrigatórios ou tente novamente mais tarde.</p>
+          </div>
+
+          <div v-else class="d-flex flex-column ga-2">
+            <p>Cliente <strong>{{ form.nome }}</strong> foi salvo no sistema.</p>
+            <span class="text-caption">E-mail: {{ form.email }}</span>
+          </div>
+        </CardDialogComponent>
       </v-col>
       <v-col cols="12">
         <v-form @submit.prevent="saveClient">
@@ -153,7 +156,7 @@ const loading = ref(false)
 
 async function saveClient() {
   form.value = {...form.value }
-  
+
   if (
     !form.value.nome ||
     !form.value.email ||
