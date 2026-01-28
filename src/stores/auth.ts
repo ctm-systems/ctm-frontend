@@ -11,6 +11,12 @@ export const useAuthStore = defineStore('auth', {
     error: '',
   }),
 
+  getters: {
+    isDiretor: (state) => {
+      return state.user?.roles?.some(r => r.nome.toLowerCase() === 'diretor') || false
+    }
+  },
+
   actions: {
     async login() {
       this.loading = true
