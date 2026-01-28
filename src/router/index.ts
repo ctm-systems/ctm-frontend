@@ -71,11 +71,13 @@ const router = createRouter({
           path: '/app/admin/usuarios',
           name: 'gerencia-usuarios',
           component: () => import('../views/ManageUsersView.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true },
         },
         {
           path: '/app/admin/processos',
           name: 'gerencia-processos',
           component: () => import('../views/ManageProcessView.vue'),
+          meta: { requiresAuth: true, requiresAdmin: true },
         }
       ],
     },
@@ -85,24 +87,24 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
 
-  // Se a rota não exige autenticação (como login ou callback), deixa passar
   if (!to.meta.requiresAuth) {
     return next()
   }
 
-  // Se já temos o usuário na Store, não precisamos bater no servidor de novo
-  if (authStore.isAuthenticated && authStore.user) {
-    return next()
+  if (!authStore.isAuthenticated || !authStore.user) {
+    try {
+      await authStore.fetchUser()
+    } catch (error) {
+      return next('/login')
+    }
   }
 
-  // Tenta validar a sessão (fetchUser chamará o /data internamente)
-  try {
-    await authStore.fetchUser()
-    return next()
-  } catch (error) {
-    // Se falhar (cookie expirado ou inexistente), vai para o login
-    return next('/login')
+  if (to.meta.requiresAdmin && !authStore.isDiretor) {
+    alert('Acesso negado: Usuário não possui privilégios de diretor.')
+    return next('/app/clientes')
   }
+
+  next()
 })
 
 export default router
