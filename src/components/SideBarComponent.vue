@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-onMounted(() => {
-  if (!authStore.user) {
-    authStore.fetchUser()
-  }
+const filteredMenu = computed(() => {
+  return menu.value.filter(item => {
+    if (!item.isAdmin) return true
+
+    return authStore.isDiretor
+  })
 })
 
 async function logout() {
@@ -18,13 +20,13 @@ async function logout() {
 }
 
 const menu = ref([
-  { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes', route: '/app/clientes' },
-  { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente', route: '/app/clientes/cadastrar' },
-  { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra', route: '/app/amostras/cadastrar' },
-  { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento', route: '/app/orcamentos/gerar' },
-  { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel', route: '/app/excel/tratar' },
-  { title: 'Gerência de usuários', icon: 'mdi-account-group', value: 'gerencia-usuarios', route: '/app/admin/usuarios' },
-  { title: 'Gerência de processos', icon: 'mdi-cogs', value: 'gerencia-processos', route: '/app/admin/processos' },
+  { title: 'Lista de clientes', icon: 'mdi-view-list', value: 'lista-clientes', route: '/app/clientes', isAdmin: false },
+  { title: 'Cadastrar cliente', icon: 'mdi-account-plus', value: 'cadastrar-cliente', route: '/app/clientes/cadastrar', isAdmin: false },
+  { title: 'Cadastrar amostra', icon: 'mdi-gold', value: 'cadastrar-amostra', route: '/app/amostras/cadastrar', isAdmin: false },
+  { title: 'Gerar orçamento', icon: 'mdi-file-pdf-box', value: 'gerar-orcamento', route: '/app/orcamentos/gerar', isAdmin: false },
+  { title: 'Tratar excel', icon: 'mdi-table', value: 'tratar-excel', route: '/app/excel/tratar', isAdmin: false },
+  { title: 'Gerência de usuários', icon: 'mdi-account-group', value: 'gerencia-usuarios', route: '/app/admin/usuarios', isAdmin: true },
+  { title: 'Gerência de processos', icon: 'mdi-cogs', value: 'gerencia-processos', route: '/app/admin/processos', isAdmin: true },
 ])
 </script>
 
@@ -49,7 +51,7 @@ const menu = ref([
       nav
     >
       <v-list-item
-        v-for="item in menu"
+        v-for="item in filteredMenu"
         :key="item.title"
         :prepend-icon="item.icon"
         :title="item.title"
