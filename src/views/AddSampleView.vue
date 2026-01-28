@@ -5,6 +5,7 @@ import { useTipoAmostraStore } from '@/stores/tipoAmostra';
 import { useProcessStore } from '@/stores/process';
 import { useAmostraStore } from '@/stores/amostra';
 import { onMounted, ref } from 'vue';
+import CardDialogComponent from '@/components/CardDialogComponent.vue';
 
 const clientsStore = useClientStore()
 const tipoAmostraStore = useTipoAmostraStore()
@@ -18,6 +19,8 @@ const form = ref({
   tipoAmostraId: null as number | null,
   dataRecebimento: '',
 })
+
+const today = new Date().toISOString().split("T")[0] // yyyy-mm-dd
 
 const processosSelecionados = ref<number[]>([])
 
@@ -35,31 +38,36 @@ async function salvarProcessos(amostraId: number) {
 
 const loading = ref(false)
 
+const dialogVisible = ref(false)
+const dialogMsg = ref<'success' | 'error' | 'none'>('none')
+
 async function saveSample() {
+  if (!form.value.nome || !form.value.clienteId) {
+    dialogMsg.value = 'error'
+    dialogVisible.value = true
+    return
+  }
+
   loading.value = true
   try {
-    // Criar FormData para envio de arquivo
     const formData = new FormData()
-
-    // Adicionar dados básicos da amostra
     formData.append('nome', form.value.nome)
     if (form.value.clienteId) formData.append('clienteId', form.value.clienteId.toString())
     if (form.value.tipoAmostraId) formData.append('tipoAmostraId', form.value.tipoAmostraId.toString())
     formData.append('dataRecebimento', form.value.dataRecebimento)
+    if (form.value.foto) formData.append('foto', form.value.foto)
 
-    // Adicionar arquivo se existir
-    if (form.value.foto) {
-      formData.append('foto', form.value.foto)
-    }
-
-    const sample = await amostrasStore.addAmostra(formData as FormData)
+    const sample = await amostrasStore.addAmostra(formData)
     if (sample) {
       await salvarProcessos(sample.id)
+      dialogMsg.value = 'success'
     }
   } catch (error) {
     console.error('Erro ao salvar a amostra:', error)
+    dialogMsg.value = 'error'
   } finally {
     loading.value = false
+    dialogVisible.value = true
   }
 }
 </script>
@@ -69,6 +77,23 @@ async function saveSample() {
     <v-row>
       <v-col cols="12">
         <span class="text-h6 font-weight-bold">Cadastrar amostra</span>
+      </v-col>
+      <v-col v-if="dialogVisible" cols="12">
+        <CardDialogComponent
+          :type="dialogMsg === 'error' ? 'error' : 'success'"
+          :title="dialogMsg === 'error' ? 'Erro ao cadastrar' : 'Amostra cadastrada!'"
+        >
+          <div v-if="dialogMsg === 'error'">
+            <p>Não foi possível salvar a amostra. Verifique se todos os campos obrigatórios (*) foram preenchidos corretamente.</p>
+          </div>
+
+          <div v-else class="d-flex flex-column">
+            <p>A amostra <strong>{{ form.nome }}</strong> foi registrada com sucesso.</p>
+            <span class="text-caption">
+              Processos vinculados: {{ processosSelecionados.length }}
+            </span>
+          </div>
+        </CardDialogComponent>
       </v-col>
       <v-col cols="12">
         <v-form @submit.prevent="saveSample">
@@ -131,6 +156,7 @@ async function saveSample() {
             density="compact"
             v-model="form.dataRecebimento"
             :disabled="!form.clienteId"
+            :max="today"
           />
 
           <div class="d-flex flex-column flex-md-row ga-3 justify-md-end">
