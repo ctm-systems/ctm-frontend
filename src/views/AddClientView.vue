@@ -32,6 +32,7 @@
                 placeholder-props="CPF"
                 prepend-icon-props="mdi-card-account-details"
                 density="compact"
+                mask-props="###.###.###-##"
               />
             </v-col>
 
@@ -41,6 +42,7 @@
                 placeholder-props="CNPJ"
                 prepend-icon-props="mdi-card-account-details"
                 density="compact"
+                mask-props="##.###.###/####-##"
               />
             </v-col>
 
@@ -50,6 +52,7 @@
                 placeholder-props="Telefone"
                 prepend-icon-props="mdi-phone"
                 density="compact"
+                mask-props="(##) #####-####"
               />
             </v-col>
 
@@ -59,6 +62,7 @@
                 placeholder-props="CEP"
                 prepend-icon-props="mdi-map-marker"
                 density="compact"
+                mask-props="#####-###"
               />
             </v-col>
 
