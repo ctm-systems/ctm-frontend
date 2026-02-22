@@ -28,6 +28,7 @@
 - [Boas práticas adotadas](#boas-práticas-adotadas)
 - [Contribuição](#contribuição)
 - [Licença](#licença)
+- [Autores](#autores)
 
 ## Descrição
 
